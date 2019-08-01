@@ -47,6 +47,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 			pvc.Spec.StorageClassName = nil
 		} else {
 			pvc.Spec.StorageClassName = &storageClassName
+			if pvc.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
+				pvc.Annotations[corev1API.BetaStorageClassAnnotation] = storageClassName
+			}
 		}
 		accessMode := pvc.Annotations[migcommon.MigrateAccessModeAnnotation]
 		if accessMode != "" {
