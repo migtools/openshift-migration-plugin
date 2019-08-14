@@ -277,7 +277,7 @@
 
 [[projects]]
   branch = "service-externalip"
-  digest = "1:81553e0c47100062955deb83888d6cce508a01339db7cb871fdd1f72690efb9a"
+  digest = "1:6107317c6b576121f96fee8b38ee74ad9a35d29ebab07c4dd52f81ac0c7ef3e3"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
@@ -290,6 +290,7 @@
     "velero-plugins/replicaset",
     "velero-plugins/replicationcontroller",
     "velero-plugins/route",
+    "velero-plugins/service",
     "velero-plugins/serviceaccount",
     "velero-plugins/statefulset",
   ]
@@ -589,7 +590,7 @@
     "route/v1",
   ]
   pruneopts = "NUT"
-  revision = "b5570061b31fed3b06c24077c534b1a1bf7ecf8b"
+  revision = "a94e914914f4228d0bcba6fc8a22614c5f5e2dad"
 
 [[projects]]
   branch = "release-4.2"
@@ -1113,6 +1114,7 @@
     "github.com/fusor/openshift-velero-plugin/velero-plugins/replicaset",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/replicationcontroller",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/route",
+    "github.com/fusor/openshift-velero-plugin/velero-plugins/service",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset",
     "github.com/heptio/velero/pkg/apis/velero/v1",
