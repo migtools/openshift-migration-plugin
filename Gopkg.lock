@@ -276,7 +276,7 @@
   version = "v1.3.3"
 
 [[projects]]
-  branch = "service-externalip"
+  branch = "master"
   digest = "1:6107317c6b576121f96fee8b38ee74ad9a35d29ebab07c4dd52f81ac0c7ef3e3"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
@@ -295,8 +295,7 @@
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "cc746899bc0cedbba942c7d4965e439ba29ecd53"
-  source = "github.com/sseago/openshift-velero-plugin"
+  revision = "49b77e4977fed196a67106292465ccf04630a8c6"
 
 [[projects]]
   digest = "1:81466b4218bf6adddac2572a30ac733a9255919bc2f470b4827a317bd4ee1756"

@@ -28,9 +28,7 @@
 
 [[constraint]]
   name = "github.com/fusor/openshift-velero-plugin"
-#  branch = "master"
-  branch = "service-externalip"
-  source = "github.com/sseago/openshift-velero-plugin"
+  branch = "master"
 
 [[override]]
   name = "github.com/openshift/client-go"
