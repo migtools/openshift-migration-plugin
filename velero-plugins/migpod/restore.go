@@ -41,6 +41,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		migcommon.ConfigureContainerSleep(pod.Spec.Containers, "infinity")
 		migcommon.ConfigureContainerSleep(pod.Spec.InitContainers, "0")
 		pod.Labels[migcommon.PodStageLabel] = "true"
+		pod.Spec.Affinity = nil
 	} else {
 
 		registry := pod.Annotations[common.RestoreRegistryHostname]
