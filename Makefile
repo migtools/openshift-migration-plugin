@@ -48,9 +48,8 @@ _output/$(BIN): $(BIN)/*.go
 				 $(BUILD_IMAGE) \
 				 go build -installsuffix "static" -tags "$(BUILDTAGS)" -i -v -o _output/$(BIN) ./$(BIN)
 
-container: all
-	cp Dockerfile _output/Dockerfile
-	docker build -t $(IMAGE) -f _output/Dockerfile _output
+container:
+	docker build -t $(IMAGE) -f Dockerfile .
 
 test:
 	go test -installsuffix "static" -tags "containers_image_ostree_stub exclude_graphdriver_devicemapper exclude_graphdriver_btrfs containers_image_openpgp exclude_graphdriver_overlay" ./velero-plugins/...
