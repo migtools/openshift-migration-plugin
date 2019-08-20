@@ -18,7 +18,7 @@ ENV BUILDTAGS containers_image_ostree_stub exclude_graphdriver_devicemapper excl
 ENV BIN velero-plugins
 RUN go build -installsuffix "static" -tags "$BUILDTAGS" -i -o _output/$BIN ./$BIN
 
-FROM registry.access.redhat.com/ubi8
+FROM registry.access.redhat.com/ubi8-minimal
 RUN mkdir /plugins
 COPY --from=builder /go/src/github.com/fusor/openshift-migration-plugin/_output/$BIN /plugins/
 USER nobody:nobody
