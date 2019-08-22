@@ -56,6 +56,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 			pvc.Spec.AccessModes = []corev1API.PersistentVolumeAccessMode{corev1API.PersistentVolumeAccessMode(accessMode)}
 		}
 	}
+	delete(pvc.Annotations, migcommon.PVCSelectedNodeAnnotation)
 
 	var out map[string]interface{}
 	objrec, _ := json.Marshal(pvc)

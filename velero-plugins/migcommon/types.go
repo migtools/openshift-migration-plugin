@@ -20,6 +20,9 @@ const MigrateQuiesceAnnotation string = "openshift.io/migrate-quiesce-pods"
 
 const PodStageLabel string = "migration-stage-pod"
 
+// kubernetes PVC annotations
+const PVCSelectedNodeAnnotation string = "volume.kubernetes.io/selected-node"
+
 // Restic annotations
 const ResticRestoreAnnotationPrefix string = "snapshot.velero.io"
 const ResticBackupAnnotation string = "backup.velero.io/backup-volumes"
