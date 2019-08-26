@@ -34,10 +34,6 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	// Use default behavior (restore the PV) for a swing migration.
 	// For copy we remove annotations and PV volumeName
 	if pvc.Annotations[migcommon.MigrateTypeAnnotation] == "copy" {
-		p.Log.Info("[pvc-restore] Removing PV specific information since we are copying")
-		pvc.Spec.VolumeName = ""
-		delete(pvc.Annotations, "pv.kubernetes.io/bind-completed")
-		delete(pvc.Annotations, "pv.kubernetes.io/bound-by-controller")
 
 		// ISSUE-61 : removing the label selectors from PVC's
 		// to avoid PV dynamic provisioner getting stuck
