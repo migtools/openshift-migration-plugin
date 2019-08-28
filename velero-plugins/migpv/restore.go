@@ -32,8 +32,12 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	p.Log.Infof("[pv-restore] pv: %s", pv.Name)
 
 	if pv.Annotations[migcommon.MigrateTypeAnnotation] == "copy" {
-		p.Log.Infof("[pv-restore] Not a swing PV migration. Skipping pv restore, %s.", pv.Name)
-		return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
+		p.Log.Infof("[pv-restore] Setting storage class, %s.", pv.Name)
+		storageClassName := pv.Annotations[migcommon.MigrateStorageClassAnnotation]
+		pv.Spec.StorageClassName = storageClassName
+		if storageClassName != "" && pv.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
+			pv.Annotations[corev1API.BetaStorageClassAnnotation] = storageClassName
+		}
 	}
 
 	var out map[string]interface{}
