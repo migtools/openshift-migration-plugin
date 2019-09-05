@@ -35,7 +35,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		p.Log.Infof("[pv-restore] Setting storage class, %s.", pv.Name)
 		storageClassName := pv.Annotations[migcommon.MigrateStorageClassAnnotation]
 		pv.Spec.StorageClassName = storageClassName
-		if storageClassName != "" && pv.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
+		if pv.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
 			pv.Annotations[corev1API.BetaStorageClassAnnotation] = storageClassName
 		}
 	}

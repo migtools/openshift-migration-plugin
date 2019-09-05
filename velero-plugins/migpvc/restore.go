@@ -39,13 +39,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		// to avoid PV dynamic provisioner getting stuck
 		pvc.Spec.Selector = nil
 		storageClassName := pvc.Annotations[migcommon.MigrateStorageClassAnnotation]
-		if storageClassName == "" {
-			pvc.Spec.StorageClassName = nil
-		} else {
-			pvc.Spec.StorageClassName = &storageClassName
-			if pvc.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
-				pvc.Annotations[corev1API.BetaStorageClassAnnotation] = storageClassName
-			}
+		pvc.Spec.StorageClassName = &storageClassName
+		if pvc.Annotations[corev1API.BetaStorageClassAnnotation] != "" {
+			pvc.Annotations[corev1API.BetaStorageClassAnnotation] = storageClassName
 		}
 		accessMode := pvc.Annotations[migcommon.MigrateAccessModeAnnotation]
 		if accessMode != "" {
