@@ -276,7 +276,7 @@
   version = "v1.3.3"
 
 [[projects]]
-  branch = "master"
+  branch = "release-1.0"
   digest = "1:10d51751e30db6a2edb5b086547e8b90f1694e8bc38fc2660386f631833895e7"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
