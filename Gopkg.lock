@@ -277,7 +277,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:dd5a02aae12aa2c941f2b691deb38516b1ffc595ca7974c124348e02b470f60b"
+  digest = "1:10d51751e30db6a2edb5b086547e8b90f1694e8bc38fc2660386f631833895e7"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
@@ -296,7 +296,7 @@
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "56a74c45636ce9c7adc5721a9a8f3d27a7ae0e0e"
+  revision = "c111810a40d54c70147c7840b605880cf61c98d9"
 
 [[projects]]
   digest = "1:81466b4218bf6adddac2572a30ac733a9255919bc2f470b4827a317bd4ee1756"
@@ -307,15 +307,15 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:a1b2a5e38f79688ee8250942d5fa960525fceb1024c855c7bc76fa77b0f3cca2"
+  digest = "1:633dde05baa7afd3544cfe4ac16fe3c5450b868cfc6b1558621ee39ebf2273ea"
   name = "github.com/gogo/protobuf"
   packages = [
     "proto",
     "sortkeys",
   ]
   pruneopts = "NUT"
-  revision = "ba06b47c162d49f2af050fb4c75bcbc86a159d5c"
-  version = "v1.2.1"
+  revision = "0ca988a254f991240804bf9821f3450d87ccbb1b"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
@@ -426,7 +426,7 @@
   version = "1.1.4"
 
 [[projects]]
-  digest = "1:83538ab8782464c085f24ddcb046091ebec413d095aad3614f71c68239f8da4a"
+  digest = "1:2b55d53e176e54c3b4233be86c89adbfdf6f9d1d95253ac6557c70550940dbc4"
   name = "github.com/klauspost/compress"
   packages = [
     "flate",
@@ -437,8 +437,8 @@
     "zstd/internal/xxhash",
   ]
   pruneopts = "NUT"
-  revision = "2c38f6d2dc5a6a21b6851f2414f4e10adf8e3eee"
-  version = "v1.8.1"
+  revision = "fdc46f09595ea8241b9bfe291bbc868a7af19e10"
+  version = "v1.8.2"
 
 [[projects]]
   digest = "1:7dc14952637aea1ef99bc1d9ad1374ddf0fa10d7b608cf5cb72d3f4fa7e4b579"
@@ -590,7 +590,7 @@
     "route/v1",
   ]
   pruneopts = "NUT"
-  revision = "58aab2885e38fd7f4fd57f2615f5f9fe38039e22"
+  revision = "a25bb2adc83e68c68e3696332ff1d21694a34bb0"
 
 [[projects]]
   branch = "release-4.2"
@@ -619,7 +619,7 @@
     "pkg/image/reference",
   ]
   pruneopts = "NUT"
-  revision = "17c171f68900d331bee3a88edf513382a0e9fd50"
+  revision = "7d4acc018c610623ee1413b1e7aebe2ac675d35f"
 
 [[projects]]
   branch = "master"
@@ -895,7 +895,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "NUT"
-  revision = "24fa4b261c55da65468f2abfdae2b024eef27dfb"
+  revision = "92dd089d5514cecde7a465f807541f83dfd486d5"
 
 [[projects]]
   digest = "1:0b1629e326b8754726e94f2c3acc87fbc6669a6c1e36ab059bdde62462ccd1a2"
