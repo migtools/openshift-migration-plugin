@@ -589,13 +589,14 @@
     "image/dockerpre012",
     "image/v1",
     "route/v1",
+    "security/v1",
   ]
   pruneopts = "NUT"
   revision = "cdbe64fb0c9184ffe47d24d0ea490705a92d9fd8"
 
 [[projects]]
   branch = "release-4.2"
-  digest = "1:ea3f3bb44a5246b506bdbd1aad6ef6241659af6d8aba79dd8a85a9e0049c7e8c"
+  digest = "1:cb2b561a422d19afd04e51782e6351f7ad1c510364e5538fc3bbebb296653857"
   name = "github.com/openshift/client-go"
   packages = [
     "apps/clientset/versioned/scheme",
@@ -606,6 +607,8 @@
     "image/clientset/versioned/typed/image/v1",
     "route/clientset/versioned/scheme",
     "route/clientset/versioned/typed/route/v1",
+    "security/clientset/versioned/scheme",
+    "security/clientset/versioned/typed/security/v1",
   ]
   pruneopts = "NUT"
   revision = "5a5508328169b8a6992ea4ef711add89ddce3c6d"
@@ -1126,6 +1129,8 @@
     "github.com/heptio/velero/pkg/plugin/velero",
     "github.com/openshift/api/apps/v1",
     "github.com/openshift/api/image/v1",
+    "github.com/openshift/api/security/v1",
+    "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1",
     "github.com/sirupsen/logrus",
     "k8s.io/api/apps/v1",
     "k8s.io/api/core/v1",

@@ -9,6 +9,7 @@ import (
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpod"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpv"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpvc"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migsa"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/build"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
@@ -54,6 +55,7 @@ func main() {
 		RegisterRestoreItemAction("openshift.io/15-service-restore-plugin", newServiceRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/16-cronjob-restore-plugin", newCronJobRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/17-buildconfig-restore-plugin", newBuildConfigRestorePlugin).
+		RegisterBackupItemAction("openshift.io/18-serviceaccount-backup-plugin", newServiceAccountBackupPlugin).
 		Serve()
 }
 
@@ -154,4 +156,15 @@ func newImageStreamRestorePlugin(logger logrus.FieldLogger) (interface{}, error)
 
 func newImageStreamTagRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return &migimagestreamtag.RestorePlugin{Log: logger}, nil
+}
+
+func newServiceAccountBackupPlugin(logger logrus.FieldLogger) (interface{}, error) {
+	saBackupPlugin := &migsa.BackupPlugin{Log: logger}
+
+	err := saBackupPlugin.InitSCCMap()
+	if err != nil {
+		return nil, err
+	}
+
+	return saBackupPlugin, nil
 }
