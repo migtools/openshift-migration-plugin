@@ -115,7 +115,7 @@
   version = "v3.0.2"
 
 [[projects]]
-  digest = "1:ada50b96c5ac518cd449ded7ad6885036b9f5c0af24260560ab3834c7bf2b24b"
+  digest = "1:0ecb37f9126c02371d02523d71b138336e565cfaeaaba334fc771d28ae0ea969"
   name = "github.com/containers/storage"
   packages = [
     ".",
@@ -160,8 +160,8 @@
     "pkg/truncindex",
   ]
   pruneopts = "NUT"
-  revision = "69bcd96b85fe4fdda4a491cc279ff888522d9122"
-  version = "v1.13.2"
+  revision = "8c25cfb55e64450a67667cf1f3d5591f0ab65583"
+  version = "v1.13.3"
 
 [[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
@@ -277,10 +277,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:10d51751e30db6a2edb5b086547e8b90f1694e8bc38fc2660386f631833895e7"
+  digest = "1:c77694b5a237c050384bc00f6fc3f3aab83bcb4933a95b708f0f908b5d61c6c8"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
+    "velero-plugins/buildconfig",
     "velero-plugins/clients",
     "velero-plugins/common",
     "velero-plugins/cronjob",
@@ -296,7 +297,7 @@
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "c111810a40d54c70147c7840b605880cf61c98d9"
+  revision = "3ab5f28d5b4a22533b857be304c38cdc5c9f102f"
 
 [[projects]]
   digest = "1:81466b4218bf6adddac2572a30ac733a9255919bc2f470b4827a317bd4ee1756"
@@ -426,7 +427,7 @@
   version = "1.1.4"
 
 [[projects]]
-  digest = "1:2b55d53e176e54c3b4233be86c89adbfdf6f9d1d95253ac6557c70550940dbc4"
+  digest = "1:96acd2c565c57aa6c4f457b34487ece00384284f3ad0019b1a6baae3e92cfa4c"
   name = "github.com/klauspost/compress"
   packages = [
     "flate",
@@ -437,8 +438,8 @@
     "zstd/internal/xxhash",
   ]
   pruneopts = "NUT"
-  revision = "fdc46f09595ea8241b9bfe291bbc868a7af19e10"
-  version = "v1.8.2"
+  revision = "dbe23c5a61c1539a54e8a2927ca1a2e7bcc92caf"
+  version = "v1.8.4"
 
 [[projects]]
   digest = "1:7dc14952637aea1ef99bc1d9ad1374ddf0fa10d7b608cf5cb72d3f4fa7e4b579"
@@ -579,7 +580,7 @@
 
 [[projects]]
   branch = "release-4.2"
-  digest = "1:502cce612b10fbf817ac832165f7c9f1329c30f0809f14cfc7e283936d24bac0"
+  digest = "1:ec2c00c35e584c512e87d73b8afbe5cac24d13209ce4307ca6856939a6281077"
   name = "github.com/openshift/api"
   packages = [
     "apps/v1",
@@ -590,7 +591,7 @@
     "route/v1",
   ]
   pruneopts = "NUT"
-  revision = "a25bb2adc83e68c68e3696332ff1d21694a34bb0"
+  revision = "cdbe64fb0c9184ffe47d24d0ea490705a92d9fd8"
 
 [[projects]]
   branch = "release-4.2"
@@ -619,7 +620,7 @@
     "pkg/image/reference",
   ]
   pruneopts = "NUT"
-  revision = "7d4acc018c610623ee1413b1e7aebe2ac675d35f"
+  revision = "cabfcc42d41ee0147a781310a9ff5b56d8c735b4"
 
 [[projects]]
   branch = "master"
@@ -651,7 +652,7 @@
     "shared",
   ]
   pruneopts = "NUT"
-  revision = "dac163c6c0a9ef0e673a032791a335d31f7e2586"
+  revision = "477b94a9a7ecbd7c6742dc617e066e394d59ebc0"
 
 [[projects]]
   digest = "1:097cc61836050f45cbb712ae3bb45d66fba464c16b8fac09907fa3c1f753eff6"
@@ -674,7 +675,7 @@
   revision = "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016"
 
 [[projects]]
-  digest = "1:d03ca24670416dc8fccc78b05d6736ec655416ca7db0a028e8fb92cfdfe3b55e"
+  digest = "1:98278956c7c550efc75a027e528aa51743f06fd0e33613d7ed224432a11e5ecf"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -682,11 +683,11 @@
     "model",
   ]
   pruneopts = "NUT"
-  revision = "31bed53e4047fd6c510e43a941f90cb31be0972a"
-  version = "v0.6.0"
+  revision = "287d3e634a1e550c9e463dd7e5a75a422c614505"
+  version = "v0.7.0"
 
 [[projects]]
-  digest = "1:e18050f44b1e9aeca97f5d71646a1cffc5f5cdae8583506ea58e5f7998da8a91"
+  digest = "1:bbbacd138cb711e328390a2d4bfaca1a41a8575f3c893450bf2ea1b74acdc7be"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -694,8 +695,8 @@
     "internal/util",
   ]
   pruneopts = "NUT"
-  revision = "00ec24a6a2d86e7074629c8384715dbb05adccd8"
-  version = "v0.0.4"
+  revision = "499c85531f756d1129edd26485a5f73871eeb308"
+  version = "v0.0.5"
 
 [[projects]]
   digest = "1:f4aaa07a6c33f2b354726d0571acbc8ca118837c75709f6353203ae1a3f8eeab"
@@ -714,12 +715,12 @@
   version = "v0.0.5"
 
 [[projects]]
-  digest = "1:9d8420bbf131d1618bde6530af37c3799340d3762cc47210c1d9532a4c3a2779"
+  digest = "1:d115708a27806831d1babbc6f28a7478ddf8e32a7095507c816e2515fb03a810"
   name = "github.com/spf13/pflag"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
-  version = "v1.0.3"
+  revision = "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab"
+  version = "v1.0.5"
 
 [[projects]]
   branch = "master"
@@ -790,11 +791,11 @@
     "ssh/terminal",
   ]
   pruneopts = "NUT"
-  revision = "9756ffdc24725223350eb3266ffb92590d28f278"
+  revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
 
 [[projects]]
   branch = "master"
-  digest = "1:a809dc0cc4ef8a282c293d737e67eec9d9bda8185484792f8d11cd480cf90573"
+  digest = "1:e40e402c8f70d4f612ee802168af9abba11f6b07d7a694d0938907ae138d2ec5"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -809,7 +810,7 @@
     "trace",
   ]
   pruneopts = "NUT"
-  revision = "ba9fcec4b297b415637633c5a6e8fa592e4a16c3"
+  revision = "a8b05e9114ab0cb08faec337c959aed24b68bf50"
 
 [[projects]]
   branch = "master"
@@ -828,7 +829,7 @@
   name = "golang.org/x/sync"
   packages = ["semaphore"]
   pruneopts = "NUT"
-  revision = "112230192c580c3556b8cee6403af37a4fc5f28c"
+  revision = "cd5d95a43a6e21273425c7ae415d3df9ea832eeb"
 
 [[projects]]
   digest = "1:51bfac9fe01b6a949bfed6db70b00bada281f0d64e5296ec644163aa977bfee0"
@@ -895,7 +896,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "NUT"
-  revision = "92dd089d5514cecde7a465f807541f83dfd486d5"
+  revision = "f660b865573183437d2d868f703fe88bb8af0b55"
 
 [[projects]]
   digest = "1:0b1629e326b8754726e94f2c3acc87fbc6669a6c1e36ab059bdde62462ccd1a2"
@@ -1074,12 +1075,12 @@
   version = "kubernetes-1.14.0"
 
 [[projects]]
-  digest = "1:c05ad592787fc6cdacf8c5309d826561aa4a7d9e4e7ea28660dfb2c77ff68ab0"
+  digest = "1:c0693cb981f43d82a767a3217b7640a4bdb341731d3814b38602f4e5dc4f01b3"
   name = "k8s.io/klog"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "3ca30a56d8a775276f9cdae009ba326fdc05af7f"
-  version = "v0.4.0"
+  revision = "2ca9ad30301bf30a8a6e0fa2110db6b8df699a91"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -1087,7 +1088,7 @@
   name = "k8s.io/utils"
   packages = ["integer"]
   pruneopts = "NUT"
-  revision = "3a4a5477acf81b48e20870a3b9dc743f63c66730"
+  revision = "5008bf6f8cd62f4b52816cfa99163fedb053d0be"
 
 [[projects]]
   digest = "1:8730e0150dfb2b7e173890c8b9868e7a273082ef8e39f4940e3506a481cf895c"
@@ -1106,6 +1107,7 @@
     "github.com/containers/image/transports/alltransports",
     "github.com/containers/image/types",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/build",
+    "github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/clients",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/common",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/cronjob",
