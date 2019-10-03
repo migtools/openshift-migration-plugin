@@ -18,8 +18,9 @@ import (
 
 // BackupPlugin is a backup item action plugin for Heptio Velero.
 type BackupPlugin struct {
-	Log    logrus.FieldLogger
-	SCCMap map[string]map[string][]apisecurity.SecurityContextConstraints
+	Log              logrus.FieldLogger
+	SCCMap           map[string]map[string][]apisecurity.SecurityContextConstraints
+	UpdatedForBackup map[string]bool
 }
 
 // AppliesTo returns a velero.ResourceSelector that applies to everything.
@@ -36,6 +37,15 @@ var securityClientError error
 // Execute copies local registry images into migration registry
 func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (runtime.Unstructured, []velero.ResourceIdentifier, error) {
 	p.Log.Info("[serviceaccount-backup] Entering ServiceAccount backup plugin")
+
+	if !p.UpdatedForBackup[backup.Name] {
+		err := p.UpdateSCCMap()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		p.UpdatedForBackup[backup.Name] = true
+	}
 
 	serviceAccount := corev1.ServiceAccount{}
 	itemMarshal, _ := json.Marshal(item)
@@ -59,17 +69,14 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 	return item, additionalItems, nil
 }
 
-// InitSCCMap fill scc map with service account as key and SCCs slice as value
-func (p *BackupPlugin) InitSCCMap() error {
+// UpdateSCCMap fill scc map with service account as key and SCCs slice as value
+func (p *BackupPlugin) UpdateSCCMap() error {
 	client, err := SecurityClient()
 	if err != nil {
 		return err
 	}
 
 	sccs, err := client.SecurityContextConstraints().List(metav1.ListOptions{})
-
-	// we need to create a dependency between scc and service accounts. Service accounts are listed in SCC's users list.
-	sccMap := make(map[string]map[string][]apisecurity.SecurityContextConstraints)
 
 	for _, scc := range sccs.Items {
 		for _, user := range scc.Users {
@@ -84,20 +91,18 @@ func (p *BackupPlugin) InitSCCMap() error {
 				namespace := splitUsername[2]
 				saName := splitUsername[3]
 
-				if sccMap[namespace] == nil {
-					sccMap[namespace] = make(map[string][]apisecurity.SecurityContextConstraints)
+				if p.SCCMap[namespace] == nil {
+					p.SCCMap[namespace] = make(map[string][]apisecurity.SecurityContextConstraints)
 				}
 
-				if sccMap[namespace][saName] == nil {
-					sccMap[namespace][saName] = make([]apisecurity.SecurityContextConstraints, 0)
+				if p.SCCMap[namespace][saName] == nil {
+					p.SCCMap[namespace][saName] = make([]apisecurity.SecurityContextConstraints, 0)
 				}
 
-				sccMap[namespace][saName] = append(sccMap[namespace][saName], scc)
+				p.SCCMap[namespace][saName] = append(p.SCCMap[namespace][saName], scc)
 			}
 		}
 	}
-
-	p.SCCMap = sccMap
 
 	return nil
 }

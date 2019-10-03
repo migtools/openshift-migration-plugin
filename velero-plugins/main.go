@@ -25,6 +25,7 @@ import (
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset"
 	veleroplugin "github.com/heptio/velero/pkg/plugin/framework"
+	apisecurity "github.com/openshift/api/security/v1"
 	"github.com/sirupsen/logrus"
 )
 
@@ -160,11 +161,9 @@ func newImageStreamTagRestorePlugin(logger logrus.FieldLogger) (interface{}, err
 
 func newServiceAccountBackupPlugin(logger logrus.FieldLogger) (interface{}, error) {
 	saBackupPlugin := &migsa.BackupPlugin{Log: logger}
-
-	err := saBackupPlugin.InitSCCMap()
-	if err != nil {
-		return nil, err
-	}
+	saBackupPlugin.UpdatedForBackup = make(map[string]bool)
+	// we need to create a dependency between scc and service accounts. Service accounts are listed in SCC's users list.
+	saBackupPlugin.SCCMap = make(map[string]map[string][]apisecurity.SecurityContextConstraints)
 
 	return saBackupPlugin, nil
 }
