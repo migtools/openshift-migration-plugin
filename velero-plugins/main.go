@@ -9,6 +9,7 @@ import (
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpod"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpv"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpvc"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migsa"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/build"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
@@ -24,6 +25,7 @@ import (
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset"
 	veleroplugin "github.com/heptio/velero/pkg/plugin/framework"
+	apisecurity "github.com/openshift/api/security/v1"
 	"github.com/sirupsen/logrus"
 )
 
@@ -54,6 +56,7 @@ func main() {
 		RegisterRestoreItemAction("openshift.io/15-service-restore-plugin", newServiceRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/16-cronjob-restore-plugin", newCronJobRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/17-buildconfig-restore-plugin", newBuildConfigRestorePlugin).
+		RegisterBackupItemAction("openshift.io/18-serviceaccount-backup-plugin", newServiceAccountBackupPlugin).
 		Serve()
 }
 
@@ -154,4 +157,13 @@ func newImageStreamRestorePlugin(logger logrus.FieldLogger) (interface{}, error)
 
 func newImageStreamTagRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return &migimagestreamtag.RestorePlugin{Log: logger}, nil
+}
+
+func newServiceAccountBackupPlugin(logger logrus.FieldLogger) (interface{}, error) {
+	saBackupPlugin := &migsa.BackupPlugin{Log: logger}
+	saBackupPlugin.UpdatedForBackup = make(map[string]bool)
+	// we need to create a dependency between scc and service accounts. Service accounts are listed in SCC's users list.
+	saBackupPlugin.SCCMap = make(map[string]map[string][]apisecurity.SecurityContextConstraints)
+
+	return saBackupPlugin, nil
 }
