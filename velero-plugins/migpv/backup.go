@@ -47,14 +47,21 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 	// Set reclaimPolicy to retain if swinging PV
 	if pv.Annotations[migcommon.MigrateTypeAnnotation] == "move" {
 		p.Log.Info("[pv-backup] Setting reclaim policy to Retain to properly move PV")
+		// Set actual PV spec which will be reflected on the cluster
 		pv.Spec.PersistentVolumeReclaimPolicy = corev1API.PersistentVolumeReclaimRetain
+		// Set backupPV spec to Retain as well to return to velero
+		backupPV.Spec.PersistentVolumeReclaimPolicy = corev1API.PersistentVolumeReclaimRetain
 	}
-
-	// Update PV
+	// Update PV on cluster
 	pv, err = client.PersistentVolumes().Update(pv)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	out := make(map[string]interface{})
+	marsh, _ := json.Marshal(backupPV)
+	json.Unmarshal(marsh, &out)
+	item.SetUnstructuredContent(out)
 
 	return item, nil, nil
 }
