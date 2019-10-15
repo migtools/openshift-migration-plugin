@@ -43,14 +43,13 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		pod.Labels[migcommon.PodStageLabel] = "true"
 		pod.Spec.Affinity = nil
 	} else {
-
 		registry := pod.Annotations[common.RestoreRegistryHostname]
 		backupRegistry := pod.Annotations[common.BackupRegistryHostname]
 		if registry == "" {
 			return nil, fmt.Errorf("failed to find restore registry annotation")
 		}
-		common.SwapContainerImageRefs(pod.Spec.Containers, backupRegistry, registry, p.Log)
-		common.SwapContainerImageRefs(pod.Spec.InitContainers, backupRegistry, registry, p.Log)
+		common.SwapContainerImageRefs(pod.Spec.Containers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
+		common.SwapContainerImageRefs(pod.Spec.InitContainers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
 
 		ownerRefs, err := common.GetOwnerReferences(input.ItemFromBackup)
 		if err != nil {

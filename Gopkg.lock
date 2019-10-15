@@ -585,10 +585,12 @@
   name = "github.com/openshift/api"
   packages = [
     "apps/v1",
+    "authorization/v1",
     "build/v1",
     "image/docker10",
     "image/dockerpre012",
     "image/v1",
+    "pkg/serialization",
     "route/v1",
     "security/v1",
   ]
@@ -1130,6 +1132,7 @@
     "github.com/heptio/velero/pkg/plugin/framework",
     "github.com/heptio/velero/pkg/plugin/velero",
     "github.com/openshift/api/apps/v1",
+    "github.com/openshift/api/authorization/v1",
     "github.com/openshift/api/image/v1",
     "github.com/openshift/api/security/v1",
     "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1",
