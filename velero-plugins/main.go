@@ -20,6 +20,7 @@ import (
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/replicaset"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/replicationcontroller"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/route"
+	"github.com/fusor/openshift-velero-plugin/velero-plugins/secret"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/service"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset"
@@ -54,6 +55,7 @@ func main() {
 		RegisterRestoreItemAction("openshift.io/15-service-restore-plugin", newServiceRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/16-cronjob-restore-plugin", newCronJobRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/17-buildconfig-restore-plugin", newBuildConfigRestorePlugin).
+		RegisterRestoreItemAction("openshift.io/19-secret-restore-plugin", newSecretRestorePlugin).
 		Serve()
 }
 
@@ -154,4 +156,8 @@ func newImageStreamRestorePlugin(logger logrus.FieldLogger) (interface{}, error)
 
 func newImageStreamTagRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return &migimagestreamtag.RestorePlugin{Log: logger}, nil
+}
+
+func newSecretRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &secret.RestorePlugin{Log: logger}, nil
 }
