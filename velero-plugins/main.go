@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migclusterrolebindings"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migdeployment"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migdeploymentconfig"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migimagestream"
@@ -9,10 +10,9 @@ import (
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpod"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpv"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpvc"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migrolebindings"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migsa"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migscc"
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migrolebindings"
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migclusterrolebindings"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/build"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
