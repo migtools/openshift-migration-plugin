@@ -21,6 +21,7 @@ import (
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/replicaset"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/replicationcontroller"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/route"
+	"github.com/fusor/openshift-velero-plugin/velero-plugins/secret"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/service"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset"
@@ -57,6 +58,7 @@ func main() {
 		RegisterRestoreItemAction("openshift.io/16-cronjob-restore-plugin", newCronJobRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/17-buildconfig-restore-plugin", newBuildConfigRestorePlugin).
 		RegisterBackupItemAction("openshift.io/18-serviceaccount-backup-plugin", newServiceAccountBackupPlugin).
+		RegisterRestoreItemAction("openshift.io/19-secret-restore-plugin", newSecretRestorePlugin).
 		Serve()
 }
 
@@ -166,4 +168,8 @@ func newServiceAccountBackupPlugin(logger logrus.FieldLogger) (interface{}, erro
 	saBackupPlugin.SCCMap = make(map[string]map[string][]apisecurity.SecurityContextConstraints)
 
 	return saBackupPlugin, nil
+}
+
+func newSecretRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &secret.RestorePlugin{Log: logger}, nil
 }
