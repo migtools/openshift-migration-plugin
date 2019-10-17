@@ -277,7 +277,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c77694b5a237c050384bc00f6fc3f3aab83bcb4933a95b708f0f908b5d61c6c8"
+  digest = "1:ff2f5520d5016ab72dfb5f971c618d23a593427b495d567b47b17673cc3b0c39"
   name = "github.com/fusor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
@@ -292,12 +292,13 @@
     "velero-plugins/replicaset",
     "velero-plugins/replicationcontroller",
     "velero-plugins/route",
+    "velero-plugins/secret",
     "velero-plugins/service",
     "velero-plugins/serviceaccount",
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "3ab5f28d5b4a22533b857be304c38cdc5c9f102f"
+  revision = "7f67854985ab7199acf5c4c9d26dd2962bf2435c"
 
 [[projects]]
   digest = "1:81466b4218bf6adddac2572a30ac733a9255919bc2f470b4827a317bd4ee1756"
@@ -580,7 +581,7 @@
 
 [[projects]]
   branch = "release-4.2"
-  digest = "1:ec2c00c35e584c512e87d73b8afbe5cac24d13209ce4307ca6856939a6281077"
+  digest = "1:9a2a4f05fb99cfe3b08a81c5a76a8780f2f3e1fb85b9fa954dbb60d222164328"
   name = "github.com/openshift/api"
   packages = [
     "apps/v1",
@@ -1121,6 +1122,7 @@
     "github.com/fusor/openshift-velero-plugin/velero-plugins/replicaset",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/replicationcontroller",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/route",
+    "github.com/fusor/openshift-velero-plugin/velero-plugins/secret",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/service",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount",
     "github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset",
