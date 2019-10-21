@@ -46,7 +46,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		return nil, errors.New("restore cluster registry not found for annotation \"openshift.io/restore-registry-hostname\"")
 	}
 	backupInternalRegistry := annotations[common.BackupRegistryHostname]
-	if len(internalRegistry) == 0 {
+	if len(backupInternalRegistry) == 0 {
 		return nil, errors.New("backup cluster registry not found for annotation \"openshift.io/backup-registry-hostname\"")
 	}
 	p.Log.Info(fmt.Sprintf("[istag-restore] backup internal registry: %#v", backupInternalRegistry))
@@ -59,6 +59,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	var additionalItems []velero.ResourceIdentifier
 	if referenceTag {
 		p.Log.Info(fmt.Sprintf("[istag-restore] Reference tag: %v, tag: %v", imageStreamTag.Tag.From.Kind, imageStreamTag.Tag.From.Name))
+
+		// Removing annotations from the tag, to prevent mismatch
+		imageStreamTag.Tag.Annotations = nil
 		if imageStreamTag.Tag.From.Kind == "ImageStreamTag" {
 			p.Log.Info("[istag-restore] ImageStreamTag reference")
 			refNamespace := imageStreamTag.Namespace
@@ -113,13 +116,17 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	// Restore the tag if this is a reference tag *or* an external image. Otherwise,
 	// image import will create the imagestreamtag automatically.
 	if referenceTag || !localImage {
+		var out map[string]interface{}
+		objrec, _ := json.Marshal(imageStreamTag)
+		json.Unmarshal(objrec, &out)
+		input.Item.SetUnstructuredContent(out)
+
 		p.Log.Info("[istag-restore] Restoring reference or remote imagestreamtag")
 		return &velero.RestoreItemActionExecuteOutput{
 			UpdatedItem:     input.Item,
 			AdditionalItems: additionalItems,
 		}, nil
-	} else {
-		p.Log.Info("[istag-restore] Not restoring local imagestreamtag")
-		return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 	}
+	p.Log.Info("[istag-restore] Not restoring local imagestreamtag")
+	return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 }
