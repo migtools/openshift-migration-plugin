@@ -74,8 +74,17 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 				if copyToTag {
 					destTag = ":" + tag.Tag
 				}
+
+				destNamespace := imageStreamUnmodified.Namespace
+
+				// if destination namespace is mapped to new one, swap it
+				namespaceMapping := input.Restore.Spec.NamespaceMapping
+				if namespaceMapping[destNamespace] != "" {
+					destNamespace = namespaceMapping[imageStreamUnmodified.Namespace]
+				}
+
 				srcPath := fmt.Sprintf("docker://%s/%s/%s@%s", migrationRegistry, imageStreamUnmodified.Namespace, imageStreamUnmodified.Name, tag.Items[i].Image)
-				destPath := fmt.Sprintf("docker://%s/%s/%s%s", internalRegistry, imageStreamUnmodified.Namespace, imageStreamUnmodified.Name, destTag)
+				destPath := fmt.Sprintf("docker://%s/%s/%s%s", internalRegistry, destNamespace, imageStreamUnmodified.Name, destTag)
 
 				p.Log.Info(fmt.Sprintf("[is-restore] copying from: %s", srcPath))
 				p.Log.Info(fmt.Sprintf("[is-restore] copying to: %s", destPath))

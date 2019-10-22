@@ -10,6 +10,9 @@ import (
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpv"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migpvc"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migsa"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migscc"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migrolebindings"
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migclusterrolebindings"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/build"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
@@ -59,6 +62,9 @@ func main() {
 		RegisterRestoreItemAction("openshift.io/17-buildconfig-restore-plugin", newBuildConfigRestorePlugin).
 		RegisterBackupItemAction("openshift.io/18-serviceaccount-backup-plugin", newServiceAccountBackupPlugin).
 		RegisterRestoreItemAction("openshift.io/19-secret-restore-plugin", newSecretRestorePlugin).
+		RegisterRestoreItemAction("openshift.io/20-scc-restore-plugin", newSCCRestorePlugin).
+		RegisterRestoreItemAction("openshift.io/21-role-bindings-restore-plugin", newRoleBindingRestorePlugin).
+		RegisterRestoreItemAction("openshift.io/22-cluster-role-bindings-restore-plugin", newClusterRoleBindingRestorePlugin).
 		Serve()
 }
 
@@ -172,4 +178,16 @@ func newServiceAccountBackupPlugin(logger logrus.FieldLogger) (interface{}, erro
 
 func newSecretRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return &secret.RestorePlugin{Log: logger}, nil
+}
+
+func newSCCRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &migscc.RestorePlugin{Log: logger}, nil
+}
+
+func newRoleBindingRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &migrolebindings.RestorePlugin{Log: logger}, nil
+}
+
+func newClusterRoleBindingRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &migclusterrolebindings.RestorePlugin{Log: logger}, nil
 }
