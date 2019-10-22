@@ -31,3 +31,6 @@ const ResticBackupAnnotation string = "backup.velero.io/backup-volumes"
 const NamespaceSCCAnnotationMCS string = "openshift.io/sa.scc.mcs"
 const NamespaceSCCAnnotationGroups string = "openshift.io/sa.scc.supplemental-groups"
 const NamespaceSCCAnnotationUidRange string = "openshift.io/sa.scc.uid-range"
+
+// IncludedInStageBackupLabel indicates whether resources was included in stage backup
+const IncludedInStageBackupLabel = "migration-included-stage-backup"
