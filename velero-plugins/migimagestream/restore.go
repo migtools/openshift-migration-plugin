@@ -13,7 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// MyRestorePlugin is a restore item action plugin for Velero
+// RestorePlugin is a restore item action plugin for Velero
 type RestorePlugin struct {
 	Log logrus.FieldLogger
 }

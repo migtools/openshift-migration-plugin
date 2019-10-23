@@ -24,6 +24,12 @@ ARCH ?= amd64
 
 BUILDTAGS ?= containers_image_ostree_stub exclude_graphdriver_devicemapper exclude_graphdriver_btrfs containers_image_openpgp exclude_graphdriver_overlay
 
+SOURCES:=$(shell find . -name '*.go' -not -path "*/vendor/*" -not -path "*/.go*")
+
+SOURCE_DIRS=velero-plugins
+
+REMOVELINKS=remove-known-symlinks-after-dep-ensure.sh
+
 all: $(addprefix build-, $(BINS))
 
 build-%:
@@ -52,9 +58,33 @@ container:
 	docker build -t $(IMAGE) -f Dockerfile .
 
 test:
-	go test -installsuffix "static" -tags "containers_image_ostree_stub exclude_graphdriver_devicemapper exclude_graphdriver_btrfs containers_image_openpgp exclude_graphdriver_overlay" ./velero-plugins/...
+	go test -installsuffix "static" -tags "$(BUILDTAGS)" ./velero-plugins/...
 
-ci: all test
+ci: lint fmtcheck vet all test
 
 clean:
 	rm -rf .go _output
+
+lint: ## Run golint
+	@golint -set_exit_status $(addsuffix /... , $(SOURCE_DIRS))
+
+fmt: ## Run go fmt
+	@gofmt -d $(SOURCES)
+
+fmtcheck: ## Check go formatting
+	@gofmt -l $(SOURCES) | grep ".*\.go"; if [ "$$?" = "0" ]; then exit 1; fi
+
+vet: ## Run go vet
+	@go vet -installsuffix "static" -tags "$(BUILDTAGS)" $(addsuffix /..., $(addprefix ./, $(SOURCE_DIRS)))
+
+help: ## Show this help screen
+	@echo 'Usage: make <OPTIONS> ... <TARGETS>'
+	@echo ''
+	@echo 'Available targets are:'
+	@echo ''
+	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ''
+
+rmlinks:
+	-bash hack/$(REMOVELINKS)

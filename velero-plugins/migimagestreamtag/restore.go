@@ -28,6 +28,7 @@ func (p *RestorePlugin) AppliesTo() (velero.ResourceSelector, error) {
 	}, nil
 }
 
+// Execute handles migration of imagestream tags
 func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*velero.RestoreItemActionExecuteOutput, error) {
 	p.Log.Info("[istag-restore] Entering ImageStreamTag restore plugin")
 
@@ -118,8 +119,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 			UpdatedItem:     input.Item,
 			AdditionalItems: additionalItems,
 		}, nil
-	} else {
-		p.Log.Info("[istag-restore] Not restoring local imagestreamtag")
-		return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 	}
+	p.Log.Info("[istag-restore] Not restoring local imagestreamtag")
+	return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 }

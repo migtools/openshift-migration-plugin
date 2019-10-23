@@ -52,6 +52,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	return velero.NewRestoreItemActionExecuteOutput(&unstructured.Unstructured{Object: out}), nil
 }
 
+// SwapSubjectNamespaces swap namespaces of role bindings subjects
 func SwapSubjectNamespaces(subjects []corev1.ObjectReference, namespaceMapping map[string]string) []corev1.ObjectReference {
 	for i, subject := range subjects {
 		newSubjectNamespace := namespaceMapping[subject.Namespace]
@@ -76,6 +77,7 @@ func SwapSubjectNamespaces(subjects []corev1.ObjectReference, namespaceMapping m
 	return subjects
 }
 
+// SwapUserNamesNamespaces swap namespaces of role bindings usernames
 func SwapUserNamesNamespaces(userNames []string, namespaceMapping map[string]string) []string {
 	for i, userName := range userNames {
 		// User name can point to a service account and username format is role:serviceaccount:namespace:serviceaccountname
@@ -102,6 +104,7 @@ func SwapUserNamesNamespaces(userNames []string, namespaceMapping map[string]str
 	return userNames
 }
 
+// SwapGroupNamesNamespaces swap namespaces of role bindings groups
 func SwapGroupNamesNamespaces(groupNames []string, namespaceMapping map[string]string) []string {
 	for i, group := range groupNames {
 		// group names can point to all service accounts in a namespace(SystemGroup) - xxx:serviceaccounts:oldnamespace

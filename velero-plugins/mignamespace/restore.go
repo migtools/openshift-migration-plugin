@@ -39,7 +39,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	annotations := make(map[string]string)
 	annotations[migcommon.NamespaceSCCAnnotationMCS] = originalNamespace.Annotations[migcommon.NamespaceSCCAnnotationMCS]
 	annotations[migcommon.NamespaceSCCAnnotationGroups] = originalNamespace.Annotations[migcommon.NamespaceSCCAnnotationGroups]
-	annotations[migcommon.NamespaceSCCAnnotationUidRange] = originalNamespace.Annotations[migcommon.NamespaceSCCAnnotationUidRange]
+	annotations[migcommon.NamespaceSCCAnnotationUIDRange] = originalNamespace.Annotations[migcommon.NamespaceSCCAnnotationUIDRange]
 	namespace.Annotations = annotations
 
 	var out map[string]interface{}

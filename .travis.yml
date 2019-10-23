@@ -8,6 +8,9 @@ sudo: required
 services:
   - docker
 
+before_install:
+  - env GO111MODULE=off go get -u golang.org/x/lint/golint
+
 before_script:
   - sudo apt-get -qq update
 
