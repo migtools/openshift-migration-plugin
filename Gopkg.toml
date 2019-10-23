@@ -98,3 +98,7 @@
 [[override]]
   name = "github.com/containers/storage"
   version = "v1.12.10"
+
+[[override]]
+  name = "github.com/opencontainers/image-spec"
+  revision = "775207bd45b6cb8153ce218cc59351799217451f"
