@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/clients"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
 	"github.com/heptio/velero/pkg/plugin/velero"
@@ -29,6 +30,11 @@ func (p *RestorePlugin) AppliesTo() (velero.ResourceSelector, error) {
 }
 
 func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*velero.RestoreItemActionExecuteOutput, error) {
+	migrating := migcommon.IsMigRestore(input.Restore)
+	if !migrating {
+		return velero.NewRestoreItemActionExecuteOutput(input.Item), nil
+	}
+
 	p.Log.Info("[istag-restore] Entering ImageStreamTag restore plugin")
 
 	imageStreamTag := imagev1API.ImageStreamTag{}

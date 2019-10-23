@@ -27,6 +27,11 @@ func (p *BackupPlugin) AppliesTo() (velero.ResourceSelector, error) {
 
 // Execute sets a custom annotation on the item being backed up.
 func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (runtime.Unstructured, []velero.ResourceIdentifier, error) {
+	migrating := migcommon.IsMigBackup(backup)
+	if !migrating {
+		return item, nil, nil
+	}
+
 	// If this is stage don't do anything
 	if backup.Annotations[migcommon.MigrateCopyPhaseAnnotation] != "final" || backup.Annotations[migcommon.MigrateQuiesceAnnotation] != "true" {
 		return item, nil, nil

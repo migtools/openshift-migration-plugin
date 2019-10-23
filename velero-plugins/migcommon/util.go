@@ -1,6 +1,7 @@
 package migcommon
 
 import (
+	v1 "github.com/heptio/velero/pkg/apis/velero/v1"
 	corev1API "k8s.io/api/core/v1"
 )
 
@@ -14,4 +15,16 @@ func ConfigureContainerSleep(containers []corev1API.Container, duration string) 
 			containers[n].Args = []string{duration}
 		}
 	}
+}
+
+// IsMigBackup returns whether the backup is a part of migration
+func IsMigBackup(backup *v1.Backup) bool {
+	part, ok := backup.Labels[PartOfMigration]
+	return ok && part == MigrationLabel
+}
+
+// IsMigRestore returns whether the restore is a part of migration
+func IsMigRestore(restore *v1.Restore) bool {
+	part, ok := restore.Labels[PartOfMigration]
+	return ok && part == MigrationLabel
 }

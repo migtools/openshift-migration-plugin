@@ -24,6 +24,11 @@ func (p *RestorePlugin) AppliesTo() (velero.ResourceSelector, error) {
 
 // Execute action for the restore plugin for the pv resource
 func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*velero.RestoreItemActionExecuteOutput, error) {
+	migrating := migcommon.IsMigRestore(input.Restore)
+	if !migrating {
+		return velero.NewRestoreItemActionExecuteOutput(input.Item), nil
+	}
+
 	p.Log.Info("[pv-restore] Entering Persistent Volume restore plugin")
 
 	pv := corev1API.PersistentVolume{}

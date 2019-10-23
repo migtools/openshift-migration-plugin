@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
 	v1 "github.com/heptio/velero/pkg/apis/velero/v1"
 	"github.com/heptio/velero/pkg/plugin/velero"
 	apisecurity "github.com/openshift/api/security/v1"
@@ -36,6 +37,10 @@ var securityClientError error
 
 // Execute copies local registry images into migration registry
 func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (runtime.Unstructured, []velero.ResourceIdentifier, error) {
+	migrating := migcommon.IsMigBackup(backup)
+	if !migrating {
+		return item, nil, nil
+	}
 	p.Log.Info("[serviceaccount-backup] Entering ServiceAccount backup plugin")
 
 	if !p.UpdatedForBackup[backup.Name] {
