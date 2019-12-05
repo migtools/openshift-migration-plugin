@@ -14,26 +14,26 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func copyImage(src, dest string, sourceCtx, destinationCtx *types.SystemContext) (string, error) {
+func copyImage(src, dest string, sourceCtx, destinationCtx *types.SystemContext) ([]byte, error) {
 	policyContext, err := getPolicyContext()
 	if err != nil {
-		return "", fmt.Errorf("Error loading trust policy: %v", err)
+		return []byte{}, fmt.Errorf("Error loading trust policy: %v", err)
 	}
 	defer policyContext.Destroy()
 
 	srcRef, err := alltransports.ParseImageName(src)
 	if err != nil {
-		return "", fmt.Errorf("Invalid source name %s: %v", src, err)
+		return []byte{}, fmt.Errorf("Invalid source name %s: %v", src, err)
 	}
 	destRef, err := alltransports.ParseImageName(dest)
 	if err != nil {
-		return "", fmt.Errorf("Invalid destination name %s: %v", dest, err)
+		return []byte{}, fmt.Errorf("Invalid destination name %s: %v", dest, err)
 	}
 	manifest, err := copy.Image(context.Background(), policyContext, destRef, srcRef, &copy.Options{
 		SourceCtx:      sourceCtx,
 		DestinationCtx: destinationCtx,
 	})
-	return string(manifest), err
+	return manifest, err
 }
 
 func getPolicyContext() (*signature.PolicyContext, error) {
@@ -52,6 +52,7 @@ func internalRegistrySystemContext() (*types.SystemContext, error) {
 	ctx := &types.SystemContext{
 		DockerDaemonInsecureSkipTLSVerify: true,
 		DockerInsecureSkipTLSVerify:       types.OptionalBoolTrue,
+		DockerDisableDestSchema1MIMETypes: true,
 		DockerAuthConfig: &types.DockerAuthConfig{
 			Username: "ignored",
 			Password: config.BearerToken,
@@ -64,6 +65,7 @@ func migrationRegistrySystemContext() (*types.SystemContext, error) {
 	ctx := &types.SystemContext{
 		DockerDaemonInsecureSkipTLSVerify: true,
 		DockerInsecureSkipTLSVerify:       types.OptionalBoolTrue,
+		DockerDisableDestSchema1MIMETypes: true,
 	}
 	return ctx, nil
 }

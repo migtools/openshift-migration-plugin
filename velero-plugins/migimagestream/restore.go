@@ -105,14 +105,14 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 }
 
-func copyImageRestore(src, dest string) (string, error) {
+func copyImageRestore(src, dest string) ([]byte, error) {
 	sourceCtx, err := migrationRegistrySystemContext()
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
 	destinationCtx, err := internalRegistrySystemContext()
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
 	return copyImage(src, dest, sourceCtx, destinationCtx)
 }
