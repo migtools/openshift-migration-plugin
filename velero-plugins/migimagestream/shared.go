@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/containers/image/copy"
-	"github.com/containers/image/signature"
-	"github.com/containers/image/transports/alltransports"
-	"github.com/containers/image/types"
+	"github.com/containers/image/v5/copy"
+	"github.com/containers/image/v5/signature"
+	"github.com/containers/image/v5/transports/alltransports"
+	"github.com/containers/image/v5/types"
 	imagev1API "github.com/openshift/api/image/v1"
 
 	"k8s.io/client-go/rest"
