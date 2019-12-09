@@ -34,3 +34,17 @@ To deploy your plugin image to an Velero server:
 
 1. Make sure your image is pushed to a registry that is accessible to your cluster's nodes.
 2. Run `velero plugin add <image>`, e.g. `velero plugin add quay.io/ocpmigrate/migration-plugin`
+
+## Modified version of `dep` needed
+
+At this point, the latest `dep` release does not support dependencies which use go
+modules. Since this plugin has dependencies which use go modules, a custom build of
+dep based on an open PR which adds go modules support is required. To build dep with
+go modules support, run
+```
+go get -d -u github.com/golang/dep
+cd $(go env GOPATH)/src/github.com/golang/dep
+git fetch origin +refs/pull/1963/merge
+git checkout FETCH_HEAD
+go install ./cmd/dep
+```
