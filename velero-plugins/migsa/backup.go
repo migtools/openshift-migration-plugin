@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"strings"
 
-	v1 "github.com/heptio/velero/pkg/apis/velero/v1"
-	"github.com/heptio/velero/pkg/plugin/velero"
 	apisecurity "github.com/openshift/api/security/v1"
 	security "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	"github.com/sirupsen/logrus"
+	v1 "github.com/vmware-tanzu/velero/pkg/apis/velero/v1"
+	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

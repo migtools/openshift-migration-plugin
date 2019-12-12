@@ -8,9 +8,9 @@ import (
 
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/clients"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
-	"github.com/heptio/velero/pkg/plugin/velero"
 	imagev1API "github.com/openshift/api/image/v1"
 	"github.com/sirupsen/logrus"
+	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
