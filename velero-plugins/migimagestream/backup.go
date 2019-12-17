@@ -13,8 +13,8 @@ import (
 
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
-	v1 "github.com/heptio/velero/pkg/apis/velero/v1"
-	"github.com/heptio/velero/pkg/plugin/velero"
+	v1 "github.com/vmware-tanzu/velero/pkg/apis/velero/v1"
+	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
 )
 
 // BackupPlugin is a backup item action plugin for Heptio Ark.
