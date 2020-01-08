@@ -11,6 +11,7 @@ import (
 	imagev1API "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
+	"github.com/containers/image/v5/manifest"
 	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
 	v1 "github.com/vmware-tanzu/velero/pkg/apis/velero/v1"
@@ -54,7 +55,7 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 
 	localImageCopied := false
 	localImageCopiedByTag := false
-	for _, tag := range im.Status.Tags {
+	for tagIndex, tag := range im.Status.Tags {
 		p.Log.Info(fmt.Sprintf("[is-backup] Backing up tag: %#v", tag.Tag))
 		specTag := findSpecTag(im.Spec.Tags, tag.Tag)
 		copyToTag := true
@@ -78,12 +79,28 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 				p.Log.Info(fmt.Sprintf("[is-backup] copying from: %s", srcPath))
 				p.Log.Info(fmt.Sprintf("[is-backup] copying to: %s", destPath))
 
-				manifest, err := copyImageBackup(srcPath, destPath)
+				imgManifest, err := copyImageBackup(srcPath, destPath)
 				if err != nil {
 					p.Log.Info(fmt.Sprintf("[is-backup] Error copying image: %v", err))
 					return nil, nil, err
 				}
-				p.Log.Info(fmt.Sprintf("[is-backup] manifest of copied image: %s", manifest))
+				newDigest, err := manifest.Digest(imgManifest)
+				if err != nil {
+					p.Log.Info(fmt.Sprintf("[is-backup] Error computing image digest for manifest: %v", err))
+					return nil, nil, err
+				}
+				p.Log.Info(fmt.Sprintf("[is-backup] src image digest: %s", tag.Items[i].Image))
+				if string(newDigest) != tag.Items[i].Image {
+					p.Log.Info(fmt.Sprintf("[is-backup] migration registry image digest: %s", newDigest))
+					im.Status.Tags[tagIndex].Items[i].Image = string(newDigest)
+					digestSplit := strings.Split(dockerImageReference, "@")
+					// update sha in dockerImageRef found
+					if len(digestSplit) == 2 {
+						im.Status.Tags[tagIndex].Items[i].DockerImageReference = digestSplit[0] +
+							"@" + string(newDigest)
+					}
+				}
+				p.Log.Info(fmt.Sprintf("[is-backup] manifest of copied image: %s", imgManifest))
 			}
 		}
 	}
@@ -109,14 +126,14 @@ func findStatusTag(tags []imagev1API.NamedTagEventList, name string) *imagev1API
 	return nil
 }
 
-func copyImageBackup(src, dest string) (string, error) {
+func copyImageBackup(src, dest string) ([]byte, error) {
 	sourceCtx, err := internalRegistrySystemContext()
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
 	destinationCtx, err := migrationRegistrySystemContext()
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
 	return copyImage(src, dest, sourceCtx, destinationCtx)
 }

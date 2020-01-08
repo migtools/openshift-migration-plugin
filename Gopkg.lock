@@ -90,8 +90,7 @@
   revision = "1097c8bae83b84cf3dfccfcc542e06c8c28ea3f4"
 
 [[projects]]
-  branch = "master"
-  digest = "1:930807c0a9bb3bc57d1d95fb9f11a335f7c6daab3ad01da698107b4d7bdc2ca6"
+  digest = "1:916fe82a562ed158f70a8bd057bcfaf3df6c464cecb0bff4a12b2690782cf45c"
   name = "github.com/containers/image"
   packages = [
     "v5/copy",
@@ -133,7 +132,7 @@
     "v5/version",
   ]
   pruneopts = "NUT"
-  revision = "bcb936db8986dd7547bc244ab5c2306d445e6fd9"
+  revision = "6dbed6e4847ccda0a82a8b72de66e6257fb0edda"
 
 [[projects]]
   branch = "master"
@@ -1200,6 +1199,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/containers/image/v5/copy",
+    "github.com/containers/image/v5/manifest",
     "github.com/containers/image/v5/signature",
     "github.com/containers/image/v5/transports/alltransports",
     "github.com/containers/image/v5/types",

@@ -101,7 +101,7 @@
 
 [[override]]
   name = "github.com/containers/image"
-  branch = "master"
+  revision = "6dbed6e4847ccda0a82a8b72de66e6257fb0edda"
 
 [[override]]
   name = "github.com/opencontainers/image-spec"
