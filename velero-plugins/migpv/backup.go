@@ -3,8 +3,8 @@ package migpv
 import (
 	"encoding/json"
 
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
-	"github.com/fusor/openshift-velero-plugin/velero-plugins/clients"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migcommon"
+	"github.com/konveyor/openshift-velero-plugin/velero-plugins/clients"
 	"github.com/sirupsen/logrus"
 	v1 "github.com/vmware-tanzu/velero/pkg/apis/velero/v1"
 	"github.com/vmware-tanzu/velero/pkg/plugin/velero"

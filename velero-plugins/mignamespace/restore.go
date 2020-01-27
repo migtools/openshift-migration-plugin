@@ -3,7 +3,7 @@ package mignamespace
 import (
 	"encoding/json"
 
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/sirupsen/logrus"
 	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
 	corev1API "k8s.io/api/core/v1"

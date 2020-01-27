@@ -14,11 +14,11 @@
 
 BINS = $(wildcard velero-*)
 
-REPO ?= github.com/fusor/openshift-migration-plugin
+REPO ?= github.com/konveyor/openshift-migration-plugin
 
 BUILD_IMAGE ?= openshift/origin-release:golang-1.11
 
-IMAGE ?= docker.io/fusor/openshift-migration-plugin
+IMAGE ?= docker.io/konveyor/openshift-migration-plugin
 
 ARCH ?= amd64
 

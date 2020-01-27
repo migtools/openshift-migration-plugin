@@ -329,31 +329,6 @@
   revision = "d7302db945fa6ea264fb79d8e13e931ea514a602"
 
 [[projects]]
-  branch = "master"
-  digest = "1:956790e766a295502ead9837b9822e705912f36f6cc0d72a1188381c83b01499"
-  name = "github.com/fusor/openshift-velero-plugin"
-  packages = [
-    "velero-plugins/build",
-    "velero-plugins/buildconfig",
-    "velero-plugins/clients",
-    "velero-plugins/common",
-    "velero-plugins/cronjob",
-    "velero-plugins/daemonset",
-    "velero-plugins/deployment",
-    "velero-plugins/deploymentconfig",
-    "velero-plugins/job",
-    "velero-plugins/replicaset",
-    "velero-plugins/replicationcontroller",
-    "velero-plugins/route",
-    "velero-plugins/secret",
-    "velero-plugins/service",
-    "velero-plugins/serviceaccount",
-    "velero-plugins/statefulset",
-  ]
-  pruneopts = "NUT"
-  revision = "8525aa66ceb6c91e21ed66d169ef5459e4d920f8"
-
-[[projects]]
   digest = "1:81466b4218bf6adddac2572a30ac733a9255919bc2f470b4827a317bd4ee1756"
   name = "github.com/ghodss/yaml"
   packages = ["."]
@@ -504,6 +479,31 @@
   pruneopts = "NUT"
   revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
   version = "v1.0.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:550a421dab328b3803ba7fcc5c9462dbc0f118598d98f3d84a6ba4f3c781dd4f"
+  name = "github.com/konveyor/openshift-velero-plugin"
+  packages = [
+    "velero-plugins/build",
+    "velero-plugins/buildconfig",
+    "velero-plugins/clients",
+    "velero-plugins/common",
+    "velero-plugins/cronjob",
+    "velero-plugins/daemonset",
+    "velero-plugins/deployment",
+    "velero-plugins/deploymentconfig",
+    "velero-plugins/job",
+    "velero-plugins/replicaset",
+    "velero-plugins/replicationcontroller",
+    "velero-plugins/route",
+    "velero-plugins/secret",
+    "velero-plugins/service",
+    "velero-plugins/serviceaccount",
+    "velero-plugins/statefulset",
+  ]
+  pruneopts = "NUT"
+  revision = "d90665f88d818ab07a7d9783ec4c35e185277b43"
 
 [[projects]]
   digest = "1:bced2617aac935b7931d43bdd5fd5ef3eacbb52291c61e423afe8037f6dd95f9"
@@ -829,7 +829,7 @@
   version = "v4.11.1"
 
 [[projects]]
-  branch = "fusor-dev"
+  branch = "konveyor-dev"
   digest = "1:edb54d8509ea6f5479d4d50f578db931dae48711b50ab4b168b5823bf4f33302"
   name = "github.com/vmware-tanzu/velero"
   packages = [
@@ -841,8 +841,8 @@
     "pkg/util/logging",
   ]
   pruneopts = "NUT"
-  revision = "d35335021acf4d2535dd734caece505484688523"
-  source = "github.com/fusor/velero.git"
+  revision = "eafaef2a4fb13029d7533e501dc57f9073f4e06b"
+  source = "github.com/konveyor/velero.git"
 
 [[projects]]
   digest = "1:2e6b1e2a89a8d2002911658aef7b77e512d80376a19ff564631ae0b0daaf1c9e"
@@ -1203,22 +1203,22 @@
     "github.com/containers/image/v5/signature",
     "github.com/containers/image/v5/transports/alltransports",
     "github.com/containers/image/v5/types",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/build",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/buildconfig",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/clients",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/common",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/cronjob",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/daemonset",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/deployment",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/deploymentconfig",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/job",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/replicaset",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/replicationcontroller",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/route",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/secret",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/service",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/serviceaccount",
-    "github.com/fusor/openshift-velero-plugin/velero-plugins/statefulset",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/build",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/buildconfig",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/clients",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/common",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/cronjob",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/daemonset",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/deployment",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/deploymentconfig",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/job",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/replicaset",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/replicationcontroller",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/route",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/secret",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/service",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/serviceaccount",
+    "github.com/konveyor/openshift-velero-plugin/velero-plugins/statefulset",
     "github.com/openshift/api/apps/v1",
     "github.com/openshift/api/authorization/v1",
     "github.com/openshift/api/image/v1",

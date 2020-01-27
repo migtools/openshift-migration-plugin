@@ -27,7 +27,7 @@
   go-tests = true
 
 [[constraint]]
-  name = "github.com/fusor/openshift-velero-plugin"
+  name = "github.com/konveyor/openshift-velero-plugin"
   branch = "master"
 
 [[override]]
@@ -40,8 +40,8 @@
 
 [[constraint]]
   name = "github.com/vmware-tanzu/velero"
-  branch = "fusor-dev"
-  source = "github.com/fusor/velero.git"
+  branch = "konveyor-dev"
+  source = "github.com/konveyor/velero.git"
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"

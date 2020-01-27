@@ -12,8 +12,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/containers/image/v5/manifest"
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migcommon"
-	"github.com/fusor/openshift-velero-plugin/velero-plugins/common"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migcommon"
+	"github.com/konveyor/openshift-velero-plugin/velero-plugins/common"
 	v1 "github.com/vmware-tanzu/velero/pkg/apis/velero/v1"
 	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
 )
