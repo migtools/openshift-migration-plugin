@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/konveyor/openshift-velero-plugin/velero-plugins/clients"
 	apisecurity "github.com/openshift/api/security/v1"
 	security "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	"github.com/sirupsen/logrus"
@@ -71,12 +72,19 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 
 // UpdateSCCMap fill scc map with service account as key and SCCs slice as value
 func (p *BackupPlugin) UpdateSCCMap() error {
-	client, err := SecurityClient()
+	sClient, err := SecurityClient()
+	if err != nil {
+		return err
+	}
+	cClient, err := clients.CoreClient()
 	if err != nil {
 		return err
 	}
 
-	sccs, err := client.SecurityContextConstraints().List(metav1.ListOptions{})
+	sccs, err := sClient.SecurityContextConstraints().List(metav1.ListOptions{})
+	if err != nil {
+		return err
+	}
 
 	for _, scc := range sccs.Items {
 		for _, user := range scc.Users {
@@ -89,24 +97,36 @@ func (p *BackupPlugin) UpdateSCCMap() error {
 			// if second element is serviceaccount then last element is serviceaccountname
 			if splitUsername[1] == "serviceaccount" {
 				namespace := splitUsername[2]
-				saName := splitUsername[3]
-
 				if p.SCCMap[namespace] == nil {
 					p.SCCMap[namespace] = make(map[string][]apisecurity.SecurityContextConstraints)
 				}
 
-				if p.SCCMap[namespace][saName] == nil {
-					p.SCCMap[namespace][saName] = make([]apisecurity.SecurityContextConstraints, 0)
+				if len(splitUsername) == 3 { // map to all SAs
+					serviceAccounts, err := cClient.ServiceAccounts(namespace).List(metav1.ListOptions{})
+					if err != nil {
+						return err
+					}
+					for _, serviceAccount := range serviceAccounts.Items {
+						addSaNameToMap(p.SCCMap[namespace], serviceAccount.Name, scc)
+					}
+				} else {
+					saName := splitUsername[3]
+					addSaNameToMap(p.SCCMap[namespace], saName, scc)
 				}
 
-				p.SCCMap[namespace][saName] = append(p.SCCMap[namespace][saName], scc)
 			}
 		}
 	}
 
 	return nil
 }
+func addSaNameToMap (nsMap map[string][]apisecurity.SecurityContextConstraints, saName string, scc apisecurity.SecurityContextConstraints) {
+	if nsMap[saName] == nil {
+		nsMap[saName] = make([]apisecurity.SecurityContextConstraints, 0)
+	}
 
+	nsMap[saName] = append(nsMap[saName], scc)
+}
 // This should be moved to clients package in future
 
 // SecurityClient returns an openshift AppsV1Client
