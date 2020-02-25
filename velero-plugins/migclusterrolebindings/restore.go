@@ -3,7 +3,7 @@ package migclusterrolebindings
 import (
 	"encoding/json"
 
-	"github.com/fusor/openshift-migration-plugin/velero-plugins/migrolebindings"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migrolebindings"
 	apiauthorization "github.com/openshift/api/authorization/v1"
 	"github.com/sirupsen/logrus"
 	"github.com/vmware-tanzu/velero/pkg/plugin/velero"
