@@ -60,9 +60,12 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 		specTag := findSpecTag(im.Spec.Tags, tag.Tag)
 		copyToTag := true
 		if specTag != nil && specTag.From != nil {
-			p.Log.Info(fmt.Sprintf("[is-backup] image tagged: %s, %s", specTag.From.Kind, specTag.From.Name))
 			// we have a tag.
-			copyToTag = false
+			p.Log.Info(fmt.Sprintf("[is-backup] image tagged: %s, %s", specTag.From.Kind, specTag.From.Name))
+			if !(specTag.From.Kind == "ImageStreamImage" && (specTag.From.Namespace == "" || specTag.From.Namespace == im.Namespace)) {
+				p.Log.Info(fmt.Sprintf("[is-backup] using tag for current namespace ImageStreamImage"))
+				copyToTag = false
+			}
 		}
 		// Iterate over items in reverse order so most recently tagged is copied last
 		for i := len(tag.Items) - 1; i >= 0; i-- {
