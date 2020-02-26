@@ -62,15 +62,23 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 
 		// Removing annotations from the tag, to prevent mismatch
 		imageStreamTag.Tag.Annotations = nil
+		namespaceMapping := input.Restore.Spec.NamespaceMapping
 		if imageStreamTag.Tag.From.Kind == "ImageStreamTag" {
 			p.Log.Info("[istag-restore] ImageStreamTag reference")
-			refNamespace := imageStreamTag.Namespace
+			refOldNamespace := imageStreamTag.Namespace
 			if imageStreamTag.Tag.From.Namespace != "" {
-				refNamespace = imageStreamTag.Tag.From.Namespace
+				refOldNamespace = imageStreamTag.Tag.From.Namespace
+				if namespaceMapping[imageStreamTag.Tag.From.Namespace] != "" {
+					imageStreamTag.Tag.From.Namespace = namespaceMapping[imageStreamTag.Tag.From.Namespace]
+				}
 			}
-			p.Log.Info(fmt.Sprintf("[istag-restore] Looking up reference tag: %s/%s", refNamespace, imageStreamTag.Tag.From.Name))
+			refNewNamespace := refOldNamespace
+			if namespaceMapping[refOldNamespace] != "" {
+				refNewNamespace = namespaceMapping[refOldNamespace]
+			}
+			p.Log.Info(fmt.Sprintf("[istag-restore] Looking up reference tag: %s/%s", refOldNamespace, imageStreamTag.Tag.From.Name))
 			client, err := clients.ImageClient()
-			_, err = client.ImageStreamTags(refNamespace).Get(imageStreamTag.Tag.From.Name, metav1.GetOptions{})
+			_, err = client.ImageStreamTags(refNewNamespace).Get(imageStreamTag.Tag.From.Name, metav1.GetOptions{})
 			if err == nil {
 				p.Log.Info("[istag-restore] reference tag found in cluster")
 			} else {
@@ -78,7 +86,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 				addImageStream := false
 				nameSplit := strings.SplitN(imageStreamTag.Tag.From.Name, ":", 2)
 				if len(nameSplit) == 2 {
-					_, err = client.ImageStreams(refNamespace).Get(nameSplit[0], metav1.GetOptions{})
+					_, err = client.ImageStreams(refNewNamespace).Get(nameSplit[0], metav1.GetOptions{})
 					if err == nil {
 						p.Log.Info("[istag-restore] reference imagestream found in cluster")
 					} else {
@@ -93,7 +101,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 							Group:    "image.openshift.io",
 							Resource: "imagestreamtags",
 						},
-						Namespace: refNamespace,
+						Namespace: refOldNamespace,
 						Name:      imageStreamTag.Tag.From.Name,
 					},
 				}
@@ -104,11 +112,18 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 								Group:    "image.openshift.io",
 								Resource: "imagestreams",
 							},
-							Namespace: refNamespace,
+							Namespace: refOldNamespace,
 							Name:      nameSplit[0],
 						},
 					}, additionalItems...)
 				}
+			}
+		} else if imageStreamTag.Tag.From.Kind == "ImageStreamImage" {
+			if imageStreamTag.Tag.From.Namespace == "" || imageStreamTag.Tag.From.Namespace == imageStreamTag.Namespace {
+				referenceTag = false
+			}
+			if imageStreamTag.Tag.From.Namespace != "" && namespaceMapping[imageStreamTag.Tag.From.Namespace] != "" {
+				imageStreamTag.Tag.From.Namespace = namespaceMapping[imageStreamTag.Tag.From.Namespace]
 			}
 		}
 	}
