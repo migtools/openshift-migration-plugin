@@ -62,9 +62,13 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		specTag := findSpecTag(imageStreamUnmodified.Spec.Tags, tag.Tag)
 		copyToTag := true
 		if specTag != nil && specTag.From != nil {
-			p.Log.Info(fmt.Sprintf("[is-restore] image tagged: %s, %s", specTag.From.Kind, specTag.From.Name))
 			// we have a tag.
-			copyToTag = false
+			p.Log.Info(fmt.Sprintf("[is-restore] image tagged: %s, %s", specTag.From.Kind, specTag.From.Name))
+			// Use the tag if it references an ImageStreamImage in the current namespace
+			if !(specTag.From.Kind == "ImageStreamImage" && (specTag.From.Namespace == "" || specTag.From.Namespace == imageStreamUnmodified.Namespace)) {
+				p.Log.Info(fmt.Sprintf("[is-restore] using tag for current namespace ImageStreamImage"))
+				copyToTag = false
+			}
 		}
 		// Iterate over items in reverse order so most recently tagged is copied last
 		for i := len(tag.Items) - 1; i >= 0; i-- {
