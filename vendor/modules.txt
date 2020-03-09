@@ -44,7 +44,7 @@ github.com/containerd/cgroups/stats/v1
 # github.com/containerd/continuity v0.0.0-20191214063359-1097c8bae83b
 ## explicit
 github.com/containerd/continuity/pathdriver
-# github.com/containers/image/v5 v5.1.0
+# github.com/containers/image/v5 v5.1.1-0.20200108174622-6dbed6e4847c
 ## explicit
 github.com/containers/image/v5/copy
 github.com/containers/image/v5/directory
@@ -97,8 +97,7 @@ github.com/containers/ocicrypt/keywrap/pgp
 github.com/containers/ocicrypt/keywrap/pkcs7
 github.com/containers/ocicrypt/spec
 github.com/containers/ocicrypt/utils
-# github.com/containers/storage v1.15.3
-## explicit
+# github.com/containers/storage v1.15.5
 github.com/containers/storage
 github.com/containers/storage/drivers
 github.com/containers/storage/drivers/aufs
@@ -250,8 +249,7 @@ github.com/inconshreveable/mousetrap
 # github.com/json-iterator/go v1.1.7
 ## explicit
 github.com/json-iterator/go
-# github.com/klauspost/compress v1.9.4
-## explicit
+# github.com/klauspost/compress v1.9.7
 github.com/klauspost/compress/flate
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0

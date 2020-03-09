@@ -11,10 +11,9 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/containerd/cgroups v0.0.0-20191217135530-f26d9e0c03a9 // indirect
 	github.com/containerd/continuity v0.0.0-20191214063359-1097c8bae83b // indirect
-	github.com/containers/image/v5 v5.1.0
+	github.com/containers/image/v5 v5.1.1-0.20200108174622-6dbed6e4847c
 	github.com/containers/libtrust v0.0.0-20190913040956-14b96171aa3b // indirect
 	github.com/containers/ocicrypt v0.0.0-20191112201931-142388cb70de // indirect
-	github.com/containers/storage v1.15.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v1.4.2-0.20180522102801-da99009bbb11 // indirect
@@ -38,7 +37,6 @@ require (
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.7 // indirect
-	github.com/klauspost/compress v1.9.4 // indirect
 	github.com/klauspost/pgzip v1.2.1 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/konveyor/openshift-velero-plugin v0.0.0-20200303232324-d6e74edcc40f
