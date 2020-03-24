@@ -97,6 +97,9 @@ func (p *BackupPlugin) UpdateSCCMap() error {
 			// if second element is serviceaccount then last element is serviceaccountname
 			if splitUsername[1] == "serviceaccount" {
 				namespace := splitUsername[2]
+				if namespace == "" {
+					continue
+				}
 				if p.SCCMap[namespace] == nil {
 					p.SCCMap[namespace] = make(map[string][]apisecurity.SecurityContextConstraints)
 				}
