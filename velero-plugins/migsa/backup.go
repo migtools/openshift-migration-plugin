@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/konveyor/openshift-velero-plugin/velero-plugins/clients"
+	"github.com/fusor/openshift-velero-plugin/velero-plugins/clients"
 	apisecurity "github.com/openshift/api/security/v1"
 	security "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	"github.com/sirupsen/logrus"
@@ -120,13 +120,14 @@ func (p *BackupPlugin) UpdateSCCMap() error {
 
 	return nil
 }
-func addSaNameToMap (nsMap map[string][]apisecurity.SecurityContextConstraints, saName string, scc apisecurity.SecurityContextConstraints) {
+func addSaNameToMap(nsMap map[string][]apisecurity.SecurityContextConstraints, saName string, scc apisecurity.SecurityContextConstraints) {
 	if nsMap[saName] == nil {
 		nsMap[saName] = make([]apisecurity.SecurityContextConstraints, 0)
 	}
 
 	nsMap[saName] = append(nsMap[saName], scc)
 }
+
 // This should be moved to clients package in future
 
 // SecurityClient returns an openshift AppsV1Client
