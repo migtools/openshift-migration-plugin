@@ -97,6 +97,9 @@ func (p *BackupPlugin) UpdateSCCMap() error {
 			// if second element is serviceaccount then last element is serviceaccountname
 			if splitUsername[1] == "serviceaccount" {
 				namespace := splitUsername[2]
+				if namespace == "" {
+					continue
+				}
 				if p.SCCMap[namespace] == nil {
 					p.SCCMap[namespace] = make(map[string][]apisecurity.SecurityContextConstraints)
 				}
@@ -120,13 +123,17 @@ func (p *BackupPlugin) UpdateSCCMap() error {
 
 	return nil
 }
-func addSaNameToMap (nsMap map[string][]apisecurity.SecurityContextConstraints, saName string, scc apisecurity.SecurityContextConstraints) {
+func addSaNameToMap(nsMap map[string][]apisecurity.SecurityContextConstraints, saName string, scc apisecurity.SecurityContextConstraints) {
+	if saName == "" {
+		return
+	}
 	if nsMap[saName] == nil {
 		nsMap[saName] = make([]apisecurity.SecurityContextConstraints, 0)
 	}
 
 	nsMap[saName] = append(nsMap[saName], scc)
 }
+
 // This should be moved to clients package in future
 
 // SecurityClient returns an openshift AppsV1Client
