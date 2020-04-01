@@ -482,7 +482,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:550a421dab328b3803ba7fcc5c9462dbc0f118598d98f3d84a6ba4f3c781dd4f"
+  digest = "1:aad2573784f1a156972916411eb80947cdc9a4c9bb65ec8f0a6c412091c7d653"
   name = "github.com/konveyor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
@@ -503,7 +503,7 @@
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "d90665f88d818ab07a7d9783ec4c35e185277b43"
+  revision = "f718493d3789d5b9de0f029fb31deed293ed4d1d"
 
 [[projects]]
   digest = "1:bced2617aac935b7931d43bdd5fd5ef3eacbb52291c61e423afe8037f6dd95f9"
