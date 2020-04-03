@@ -31,3 +31,7 @@ const ResticBackupAnnotation string = "backup.velero.io/backup-volumes"
 const NamespaceSCCAnnotationMCS string = "openshift.io/sa.scc.mcs"
 const NamespaceSCCAnnotationGroups string = "openshift.io/sa.scc.supplemental-groups"
 const NamespaceSCCAnnotationUidRange string = "openshift.io/sa.scc.uid-range"
+
+// Restored items label
+const MigMigrationLabelKey string = "migmigration"
+const MigratedByLabel string = "migration.openshift.io/migrated-by" // (migmigration UID)
