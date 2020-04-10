@@ -44,9 +44,6 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 	}
 
 	internalRegistry := annotations[common.BackupRegistryHostname]
-	if len(internalRegistry) == 0 {
-		return nil, nil, errors.New("backup cluster registry not found for annotation \"openshift.io/backup-registry-hostname\"")
-	}
 	migrationRegistry := backup.Annotations[migcommon.MigrationRegistry]
 	if len(migrationRegistry) == 0 {
 		return nil, nil, errors.New("migration registry not found for annotation \"openshift.io/migration\"")
@@ -70,7 +67,7 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 		// Iterate over items in reverse order so most recently tagged is copied last
 		for i := len(tag.Items) - 1; i >= 0; i-- {
 			dockerImageReference := tag.Items[i].DockerImageReference
-			if strings.HasPrefix(dockerImageReference, internalRegistry) {
+			if len(internalRegistry) > 0 && strings.HasPrefix(dockerImageReference, internalRegistry) {
 				localImageCopied = true
 				destTag := ""
 				if copyToTag {

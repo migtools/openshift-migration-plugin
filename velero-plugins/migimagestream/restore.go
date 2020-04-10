@@ -42,13 +42,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	itemMarshal, _ = json.Marshal(input.ItemFromBackup)
 	json.Unmarshal(itemMarshal, &imageStreamUnmodified)
 
-	internalRegistry := annotations[common.RestoreRegistryHostname]
-	if len(internalRegistry) == 0 {
-		return nil, errors.New("restore cluster registry not found for annotation \"openshift.io/restore-registry-hostname\"")
-	}
-	backupInternalRegistry := annotations[common.BackupRegistryHostname]
-	if len(internalRegistry) == 0 {
-		return nil, errors.New("backup cluster registry not found for annotation \"openshift.io/backup-registry-hostname\"")
+	backupInternalRegistry, internalRegistry, err := common.GetSrcAndDestRegistryInfo(input.Item)
+	if err != nil {
+		return nil, err
 	}
 	migrationRegistry := input.Restore.Annotations[migcommon.MigrationRegistry]
 	if len(migrationRegistry) == 0 {
@@ -73,7 +69,10 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		// Iterate over items in reverse order so most recently tagged is copied last
 		for i := len(tag.Items) - 1; i >= 0; i-- {
 			dockerImageReference := tag.Items[i].DockerImageReference
-			if strings.HasPrefix(dockerImageReference, backupInternalRegistry) {
+			if len(backupInternalRegistry) > 0 && strings.HasPrefix(dockerImageReference, backupInternalRegistry) {
+				if len(internalRegistry) == 0 {
+					return nil, errors.New("restore cluster registry not found but backup has internal images")
+				}
 				destTag := ""
 				if copyToTag {
 					destTag = ":" + tag.Tag

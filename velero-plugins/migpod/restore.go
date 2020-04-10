@@ -2,7 +2,6 @@ package migpod
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/konveyor/openshift-velero-plugin/velero-plugins/common"
@@ -43,10 +42,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		pod.Labels[migcommon.PodStageLabel] = "true"
 		pod.Spec.Affinity = nil
 	} else {
-		registry := pod.Annotations[common.RestoreRegistryHostname]
-		backupRegistry := pod.Annotations[common.BackupRegistryHostname]
-		if registry == "" {
-			return nil, fmt.Errorf("failed to find restore registry annotation")
+		backupRegistry, registry, err := common.GetSrcAndDestRegistryInfo(input.Item)
+		if err != nil {
+			return nil, err
 		}
 		common.SwapContainerImageRefs(pod.Spec.Containers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
 		common.SwapContainerImageRefs(pod.Spec.InitContainers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
