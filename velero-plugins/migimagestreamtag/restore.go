@@ -2,7 +2,6 @@ package migimagestreamtag
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -41,17 +40,10 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 
 	p.Log.Info(fmt.Sprintf("[istag-restore] Restoring imagestreamtag %s", imageStreamTag.Name))
 
-	internalRegistry := annotations[common.RestoreRegistryHostname]
-	if len(internalRegistry) == 0 {
-		return nil, errors.New("restore cluster registry not found for annotation \"openshift.io/restore-registry-hostname\"")
-	}
 	backupInternalRegistry := annotations[common.BackupRegistryHostname]
-	if len(backupInternalRegistry) == 0 {
-		return nil, errors.New("backup cluster registry not found for annotation \"openshift.io/backup-registry-hostname\"")
-	}
 	p.Log.Info(fmt.Sprintf("[istag-restore] backup internal registry: %#v", backupInternalRegistry))
 	dockerImageReference := imageStreamTag.Image.DockerImageReference
-	localImage := common.HasImageRefPrefix(dockerImageReference, backupInternalRegistry)
+	localImage := len(backupInternalRegistry) > 0 && common.HasImageRefPrefix(dockerImageReference, backupInternalRegistry)
 	if localImage {
 		p.Log.Info(fmt.Sprintf("[istag-restore] Local image: %v", dockerImageReference))
 	}
