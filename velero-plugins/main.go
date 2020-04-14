@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migclusterrolebindings"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migcommon"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migdeployment"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migdeploymentconfig"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migimagestream"
@@ -9,10 +11,9 @@ import (
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migpod"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migpv"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migpvc"
+	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migrolebindings"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migsa"
 	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migscc"
-	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migrolebindings"
-	"github.com/konveyor/openshift-migration-plugin/velero-plugins/migclusterrolebindings"
 	"github.com/konveyor/openshift-velero-plugin/velero-plugins/build"
 	"github.com/konveyor/openshift-velero-plugin/velero-plugins/buildconfig"
 	"github.com/konveyor/openshift-velero-plugin/velero-plugins/common"
@@ -37,6 +38,7 @@ func main() {
 	veleroplugin.NewServer().
 		RegisterBackupItemAction("openshift.io/01-common-backup-plugin", newCommonBackupPlugin).
 		RegisterRestoreItemAction("openshift.io/01-common-restore-plugin", newCommonRestorePlugin).
+		RegisterRestoreItemAction("openshift.io/01-migcommon-restore-plugin", newMigCommonRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/01-namespace-restore-plugin", newNamespaceRestorePlugin).
 		RegisterRestoreItemAction("openshift.io/02-serviceaccount-restore-plugin", newServiceAccountRestorePlugin).
 		RegisterBackupItemAction("openshift.io/02-pv-backup-plugin", newPVBackupPlugin).
@@ -74,6 +76,10 @@ func newCommonBackupPlugin(logger logrus.FieldLogger) (interface{}, error) {
 
 func newCommonRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
 	return &common.RestorePlugin{Log: logger}, nil
+}
+
+func newMigCommonRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
+	return &migcommon.RestorePlugin{Log: logger}, nil
 }
 
 func newNamespaceRestorePlugin(logger logrus.FieldLogger) (interface{}, error) {
