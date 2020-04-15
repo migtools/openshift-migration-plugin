@@ -29,7 +29,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	}
 	// Skip cluster-scoped resources
 	if len(metadata.GetNamespace()) == 0 {
-		return nil, nil
+		return velero.NewRestoreItemActionExecuteOutput(input.Item), nil
 	}
 	name := metadata.GetName()
 	p.Log.Infof("[common-restore] common migration restore plugin for %s", name)
