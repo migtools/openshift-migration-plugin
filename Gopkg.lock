@@ -482,7 +482,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f685c5adab92743c4220e81be5e5ce43b26288b6829463554f150194c9de9ce4"
+  digest = "1:33add236dfce834b8a9d2d171d5a05b13ef02892b79e7e742600bfd782750b1d"
   name = "github.com/konveyor/openshift-velero-plugin"
   packages = [
     "velero-plugins/build",
@@ -503,7 +503,7 @@
     "velero-plugins/statefulset",
   ]
   pruneopts = "NUT"
-  revision = "c58812cbfdd686adc02095f0a216675a6c267a78"
+  revision = "4d55378a6c7d9f0df9aeba1a108af86b2816d46e"
 
 [[projects]]
   digest = "1:bced2617aac935b7931d43bdd5fd5ef3eacbb52291c61e423afe8037f6dd95f9"
@@ -1230,6 +1230,7 @@
     "github.com/vmware-tanzu/velero/pkg/plugin/velero",
     "k8s.io/api/apps/v1",
     "k8s.io/api/core/v1",
+    "k8s.io/apimachinery/pkg/api/meta",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured",
     "k8s.io/apimachinery/pkg/runtime",
