@@ -481,7 +481,7 @@
   version = "v1.0.2"
 
 [[projects]]
-  branch = "master"
+  branch = "release-1.2.0"
   digest = "1:33add236dfce834b8a9d2d171d5a05b13ef02892b79e7e742600bfd782750b1d"
   name = "github.com/konveyor/openshift-velero-plugin"
   packages = [
