@@ -79,7 +79,7 @@ func (p *BackupPlugin) Execute(item runtime.Unstructured, backup *v1.Backup) (ru
 				p.Log.Info(fmt.Sprintf("[is-backup] copying from: %s", srcPath))
 				p.Log.Info(fmt.Sprintf("[is-backup] copying to: %s", destPath))
 
-				imgManifest, err := copyImageBackup(srcPath, destPath)
+				imgManifest, err := copyImageBackup(p.Log, srcPath, destPath)
 				if err != nil {
 					p.Log.Info(fmt.Sprintf("[is-backup] Error copying image: %v", err))
 					return nil, nil, err
@@ -126,7 +126,7 @@ func findStatusTag(tags []imagev1API.NamedTagEventList, name string) *imagev1API
 	return nil
 }
 
-func copyImageBackup(src, dest string) ([]byte, error) {
+func copyImageBackup(log logrus.FieldLogger, src, dest string) ([]byte, error) {
 	sourceCtx, err := internalRegistrySystemContext()
 	if err != nil {
 		return []byte{}, err
@@ -135,5 +135,5 @@ func copyImageBackup(src, dest string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	return copyImage(src, dest, sourceCtx, destinationCtx)
+	return copyImage(log, src, dest, sourceCtx, destinationCtx)
 }
