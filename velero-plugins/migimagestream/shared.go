@@ -53,7 +53,7 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 		time.Sleep(time.Duration(retryWait) * time.Second)
 		retryWait += 5
 	}
-	return nil, err
+	return []byte{}, err
 }
 
 func getPolicyContext() (*signature.PolicyContext, error) {
