@@ -49,7 +49,7 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 		if strings.Contains(err.Error(), "blob unknown to registry") {
 			log.Warn(fmt.Sprintf("encountered `blob unknown to registry error` for image %s", src))
 		}
-		log.Info(fmt.Sprintf("attempt #%s failed, waiting %ss and then retrying", i, retryWait))
+		log.Info(fmt.Sprintf("attempt #%v failed, waiting %vs and then retrying", i, retryWait))
 		time.Sleep(time.Duration(retryWait) * time.Second)
 		retryWait += 5
 	}
