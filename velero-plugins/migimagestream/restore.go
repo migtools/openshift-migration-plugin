@@ -91,7 +91,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 
 				p.Log.Info(fmt.Sprintf("[is-restore] copying from: %s", srcPath))
 				p.Log.Info(fmt.Sprintf("[is-restore] copying to: %s", destPath))
-				manifest, err := copyImageRestore(srcPath, destPath)
+				manifest, err := copyImageRestore(p.Log, srcPath, destPath)
 				if err != nil {
 					p.Log.Info(fmt.Sprintf("[is-restore] Error copying image: %v", err))
 					return nil, err
@@ -108,7 +108,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	return velero.NewRestoreItemActionExecuteOutput(input.Item).WithoutRestore(), nil
 }
 
-func copyImageRestore(src, dest string) ([]byte, error) {
+func copyImageRestore(log logrus.FieldLogger, src, dest string) ([]byte, error) {
 	sourceCtx, err := migrationRegistrySystemContext()
 	if err != nil {
 		return []byte{}, err
@@ -117,5 +117,5 @@ func copyImageRestore(src, dest string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	return copyImage(src, dest, sourceCtx, destinationCtx)
+	return copyImage(log, src, dest, sourceCtx, destinationCtx)
 }
