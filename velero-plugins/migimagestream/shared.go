@@ -36,6 +36,7 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 	// Let's retry the image copy up to 10 times
 	// Each retry will wait 5 seconds longer
 	// Let's log a warning if we encounter `blob unknown to registry`
+	// TODO: Change this to only retry on specific errors from image copy
 	retryWait := 5
 	log.Info(fmt.Sprintf("copying image: %s; will attempt up to 5 times...", src))
 	for i := 0; i < 4; i++ {
@@ -44,7 +45,7 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 			DestinationCtx: destinationCtx,
 		})
 		if err == nil {
-			return manifest, err
+			return manifest, nil
 		}
 		if strings.Contains(err.Error(), "blob unknown to registry") {
 			log.Warn(fmt.Sprintf("encountered `blob unknown to registry error` for image %s", src))
