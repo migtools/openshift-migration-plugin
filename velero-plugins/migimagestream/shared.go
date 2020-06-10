@@ -44,11 +44,14 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 			SourceCtx:      sourceCtx,
 			DestinationCtx: destinationCtx,
 		})
+		if err == nil && len(manifest) > 0 {
+			return manifest, nil
+		}
+		// If manifest is empty error could be nil so lets explicitly set it
+		// We encountered this if we were to force disable the connection between
+		// velero and the registry pod
 		if len(manifest) == 0 {
 			err = fmt.Errorf("Empty manifest found after copying image")
-		}
-		if err == nil {
-			return manifest, nil
 		}
 		if strings.Contains(err.Error(), "blob unknown to registry") {
 			log.Warn(fmt.Sprintf("encountered `blob unknown to registry error` for image %s", src))
