@@ -44,17 +44,20 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 			SourceCtx:      sourceCtx,
 			DestinationCtx: destinationCtx,
 		})
-		if err == nil {
+		if err == nil && len(manifest) > 0 {
 			return manifest, nil
 		}
 		if strings.Contains(err.Error(), "blob unknown to registry") {
 			log.Warn(fmt.Sprintf("encountered `blob unknown to registry error` for image %s", src))
 		}
+		if err != nil {
+			log.Warn(err)
+		}
 		log.Info(fmt.Sprintf("attempt #%v failed, waiting %vs and then retrying", i, retryWait))
 		time.Sleep(time.Duration(retryWait) * time.Second)
 		retryWait += 5
 	}
-	return []byte{}, err
+	return []byte{}, fmt.Errorf("Failed to copy image after 5 attempts")
 }
 
 func getPolicyContext() (*signature.PolicyContext, error) {
