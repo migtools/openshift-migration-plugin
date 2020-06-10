@@ -44,6 +44,9 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 			SourceCtx:      sourceCtx,
 			DestinationCtx: destinationCtx,
 		})
+		if len(manifest) == 0 {
+			err = fmt.Errorf("Empty manifest found after copying image")
+		}
 		if err == nil {
 			return manifest, nil
 		}
