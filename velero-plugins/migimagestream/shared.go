@@ -37,9 +37,11 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 	// Each retry will wait 5 seconds longer
 	// Let's log a warning if we encounter `blob unknown to registry`
 	// TODO: Change this to only retry on specific errors from image copy
-	retryWait := 5
+	retryWait := 0
 	log.Info(fmt.Sprintf("copying image: %s; will attempt up to 5 times...", src))
 	for i := 0; i < 7; i++ {
+		time.Sleep(time.Duration(retryWait) * time.Second)
+		retryWait += 5
 		manifest, err := copy.Image(context.Background(), policyContext, destRef, srcRef, &copy.Options{
 			SourceCtx:      sourceCtx,
 			DestinationCtx: destinationCtx,
@@ -54,8 +56,6 @@ func copyImage(log logrus.FieldLogger, src, dest string, sourceCtx, destinationC
 			log.Warn(err)
 		}
 		log.Info(fmt.Sprintf("attempt #%v failed, waiting %vs and then retrying", i+1, retryWait))
-		time.Sleep(time.Duration(retryWait) * time.Second)
-		retryWait += 5
 	}
 	return []byte{}, fmt.Errorf("Failed to copy image after 5 attempts")
 }
