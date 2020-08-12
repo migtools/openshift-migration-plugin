@@ -78,7 +78,15 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 		}
 
 	}
-
+	// if this is a stage pod and there's a stage pod image found
+	destStagePodImage := input.Restore.Annotations[migcommon.StagePodImageAnnotation]
+	if len(pod.Labels[migcommon.IncludedInStageBackupLabel]) > 0 && len(destStagePodImage) > 0 {
+		p.Log.Infof("[pod-restore] swapping stage pod images for pod %s", pod.Name)
+		for n, container := range pod.Spec.Containers {
+			p.Log.Infof("[pod-restore] swapping stage pod image from %s to %s", container.Image, destStagePodImage)
+			pod.Spec.Containers[n].Image = destStagePodImage
+		}
+	}
 	var out map[string]interface{}
 	objrec, _ := json.Marshal(pod)
 	json.Unmarshal(objrec, &out)

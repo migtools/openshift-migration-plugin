@@ -20,6 +20,10 @@ const MigrateQuiesceAnnotation string = "openshift.io/migrate-quiesce-pods"
 
 const PodStageLabel string = "migration-stage-pod"
 
+// Stage pod (sleep) image
+const StagePodImageAnnotation = "migration.openshift.io/stage-pod-image"
+const IncludedInStageBackupLabel = "migration-included-stage-backup"
+
 // kubernetes PVC annotations
 const PVCSelectedNodeAnnotation string = "volume.kubernetes.io/selected-node"
 
