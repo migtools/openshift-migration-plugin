@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/containers/image/v5/types"
@@ -18,7 +19,8 @@ import (
 )
 
 type dockerAuthConfig struct {
-	Auth string `json:"auth,omitempty"`
+	Auth          string `json:"auth,omitempty"`
+	IdentityToken string `json:"identitytoken,omitempty"`
 }
 
 type dockerConfigFile struct {
@@ -36,7 +38,12 @@ var (
 	xdgRuntimeDirPath       = filepath.FromSlash("containers/auth.json")
 	dockerHomePath          = filepath.FromSlash(".docker/config.json")
 	dockerLegacyHomePath    = ".dockercfg"
+	nonLinuxAuthFilePath    = filepath.FromSlash(".config/containers/auth.json")
 
+	// Note that the keyring support has been disabled as it was causing
+	// regressions. Before enabling, please revisit TODO(keyring) comments
+	// which need to be addressed if the need remerged to support the
+	// kernel keyring.
 	enableKeyring = false
 
 	// ErrNotLoggedIn is returned for users not logged into a registry
@@ -72,23 +79,53 @@ func SetAuthentication(sys *types.SystemContext, registry, username, password st
 	})
 }
 
-// GetAuthentication returns the registry credentials stored in
-// either auth.json file or .docker/config.json
-// If an entry is not found empty strings are returned for the username and password
-func GetAuthentication(sys *types.SystemContext, registry string) (string, string, error) {
-	if sys != nil && sys.DockerAuthConfig != nil {
-		logrus.Debug("Returning credentials from DockerAuthConfig")
-		return sys.DockerAuthConfig.Username, sys.DockerAuthConfig.Password, nil
-	}
+// GetAllCredentials returns the registry credentials for all registries stored
+// in either the auth.json file or the docker/config.json.
+func GetAllCredentials(sys *types.SystemContext) (map[string]types.DockerAuthConfig, error) {
+	// Note: we need to read the auth files in the inverse order to prevent
+	// a priority inversion when writing to the map.
+	authConfigs := make(map[string]types.DockerAuthConfig)
+	paths := getAuthFilePaths(sys)
+	for i := len(paths) - 1; i >= 0; i-- {
+		path := paths[i]
+		// readJSONFile returns an empty map in case the path doesn't exist.
+		auths, err := readJSONFile(path.path, path.legacyFormat)
+		if err != nil {
+			return nil, errors.Wrapf(err, "error reading JSON file %q", path.path)
+		}
 
-	if enableKeyring {
-		username, password, err := getAuthFromKernelKeyring(registry)
-		if err == nil {
-			logrus.Debug("returning credentials from kernel keyring")
-			return username, password, nil
+		for registry, data := range auths.AuthConfigs {
+			conf, err := decodeDockerAuth(data)
+			if err != nil {
+				return nil, err
+			}
+			authConfigs[normalizeRegistry(registry)] = conf
+		}
+
+		// Credential helpers may override credentials from the auth file.
+		for registry, credHelper := range auths.CredHelpers {
+			username, password, err := getAuthFromCredHelper(credHelper, registry)
+			if err != nil {
+				if credentials.IsErrCredentialsNotFoundMessage(err.Error()) {
+					continue
+				}
+				return nil, err
+			}
+
+			conf := types.DockerAuthConfig{Username: username, Password: password}
+			authConfigs[normalizeRegistry(registry)] = conf
 		}
 	}
 
+	// TODO(keyring): if we ever reenable the keyring support, we had to
+	// query all credentials from the keyring here.
+
+	return authConfigs, nil
+}
+
+// getAuthFilePaths returns a slice of authPaths based on the system context
+// in the order they should be searched. Note that some paths may not exist.
+func getAuthFilePaths(sys *types.SystemContext) []authPath {
 	paths := []authPath{}
 	pathToAuth, lf, err := getPathToAuth(sys)
 	if err == nil {
@@ -101,21 +138,65 @@ func GetAuthentication(sys *types.SystemContext, registry string) (string, strin
 	}
 	paths = append(paths,
 		authPath{path: filepath.Join(homedir.Get(), dockerHomePath), legacyFormat: false},
-		authPath{path: filepath.Join(homedir.Get(), dockerLegacyHomePath), legacyFormat: true})
+		authPath{path: filepath.Join(homedir.Get(), dockerLegacyHomePath), legacyFormat: true},
+	)
+	return paths
+}
 
-	for _, path := range paths {
-		username, password, err := findAuthentication(registry, path.path, path.legacyFormat)
-		if err != nil {
-			logrus.Debugf("Credentials not found")
-			return "", "", err
-		}
-		if username != "" && password != "" {
-			logrus.Debugf("Returning credentials from %s", path.path)
-			return username, password, nil
+// GetCredentials returns the registry credentials stored in either auth.json
+// file or .docker/config.json, including support for OAuth2 and IdentityToken.
+// If an entry is not found, an empty struct is returned.
+func GetCredentials(sys *types.SystemContext, registry string) (types.DockerAuthConfig, error) {
+	if sys != nil && sys.DockerAuthConfig != nil {
+		logrus.Debug("Returning credentials from DockerAuthConfig")
+		return *sys.DockerAuthConfig, nil
+	}
+
+	if enableKeyring {
+		username, password, err := getAuthFromKernelKeyring(registry)
+		if err == nil {
+			logrus.Debug("returning credentials from kernel keyring")
+			return types.DockerAuthConfig{
+				Username: username,
+				Password: password,
+			}, nil
 		}
 	}
+
+	for _, path := range getAuthFilePaths(sys) {
+		authConfig, err := findAuthentication(registry, path.path, path.legacyFormat)
+		if err != nil {
+			logrus.Debugf("Credentials not found")
+			return types.DockerAuthConfig{}, err
+		}
+
+		if (authConfig.Username != "" && authConfig.Password != "") || authConfig.IdentityToken != "" {
+			logrus.Debugf("Returning credentials from %s", path.path)
+			return authConfig, nil
+		}
+	}
+
 	logrus.Debugf("Credentials not found")
-	return "", "", nil
+	return types.DockerAuthConfig{}, nil
+}
+
+// GetAuthentication returns the registry credentials stored in
+// either auth.json file or .docker/config.json
+// If an entry is not found empty strings are returned for the username and password
+//
+// Deprecated: This API only has support for username and password. To get the
+// support for oauth2 in docker registry authentication, we added the new
+// GetCredentials API. The new API should be used and this API is kept to
+// maintain backward compatibility.
+func GetAuthentication(sys *types.SystemContext, registry string) (string, string, error) {
+	auth, err := GetCredentials(sys, registry)
+	if err != nil {
+		return "", "", err
+	}
+	if auth.IdentityToken != "" {
+		return "", "", errors.Wrap(ErrNotSupported, "non-empty identity token found and this API doesn't support it")
+	}
+	return auth.Username, auth.Password, nil
 }
 
 // RemoveAuthentication deletes the credentials stored in auth.json
@@ -164,10 +245,8 @@ func RemoveAllAuthentication(sys *types.SystemContext) error {
 	})
 }
 
-// getPath gets the path of the auth.json file
-// The path can be overriden by the user if the overwrite-path flag is set
-// If the flag is not set and XDG_RUNTIME_DIR is set, the auth.json file is saved in XDG_RUNTIME_DIR/containers
-// Otherwise, the auth.json file is stored in /run/containers/UID
+// getPathToAuth gets the path of the auth.json file used for reading and writting credentials
+// returns the path, and a bool specifies whether the file is in legacy format
 func getPathToAuth(sys *types.SystemContext) (string, bool, error) {
 	if sys != nil {
 		if sys.AuthFilePath != "" {
@@ -179,6 +258,9 @@ func getPathToAuth(sys *types.SystemContext) (string, bool, error) {
 		if sys.RootForImplicitAbsolutePaths != "" {
 			return filepath.Join(sys.RootForImplicitAbsolutePaths, fmt.Sprintf(defaultPerUIDPathFormat, os.Getuid())), false, nil
 		}
+	}
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		return filepath.Join(homedir.Get(), nonLinuxAuthFilePath), false, nil
 	}
 
 	runtimeDir := os.Getenv("XDG_RUNTIME_DIR")
@@ -223,6 +305,13 @@ func readJSONFile(path string, legacyFormat bool) (dockerConfigFile, error) {
 		return dockerConfigFile{}, errors.Wrapf(err, "error unmarshaling JSON at %q", path)
 	}
 
+	if auths.AuthConfigs == nil {
+		auths.AuthConfigs = map[string]dockerAuthConfig{}
+	}
+	if auths.CredHelpers == nil {
+		auths.CredHelpers = make(map[string]string)
+	}
+
 	return auths, nil
 }
 
@@ -232,17 +321,15 @@ func modifyJSON(sys *types.SystemContext, editor func(auths *dockerConfigFile) (
 	if err != nil {
 		return err
 	}
-
-	dir := filepath.Dir(path)
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		if err = os.MkdirAll(dir, 0700); err != nil {
-			return errors.Wrapf(err, "error creating directory %q", dir)
-		}
-	}
-
 	if legacyFormat {
 		return fmt.Errorf("writes to %s using legacy format are not supported", path)
 	}
+
+	dir := filepath.Dir(path)
+	if err = os.MkdirAll(dir, 0700); err != nil {
+		return err
+	}
+
 	auths, err := readJSONFile(path, false)
 	if err != nil {
 		return errors.Wrapf(err, "error reading JSON file %q", path)
@@ -294,20 +381,28 @@ func deleteAuthFromCredHelper(credHelper, registry string) error {
 }
 
 // findAuthentication looks for auth of registry in path
-func findAuthentication(registry, path string, legacyFormat bool) (string, string, error) {
+func findAuthentication(registry, path string, legacyFormat bool) (types.DockerAuthConfig, error) {
 	auths, err := readJSONFile(path, legacyFormat)
 	if err != nil {
-		return "", "", errors.Wrapf(err, "error reading JSON file %q", path)
+		return types.DockerAuthConfig{}, errors.Wrapf(err, "error reading JSON file %q", path)
 	}
 
 	// First try cred helpers. They should always be normalized.
 	if ch, exists := auths.CredHelpers[registry]; exists {
-		return getAuthFromCredHelper(ch, registry)
+		username, password, err := getAuthFromCredHelper(ch, registry)
+		if err != nil {
+			return types.DockerAuthConfig{}, err
+		}
+
+		return types.DockerAuthConfig{
+			Username: username,
+			Password: password,
+		}, nil
 	}
 
 	// I'm feeling lucky
 	if val, exists := auths.AuthConfigs[registry]; exists {
-		return decodeDockerAuth(val.Auth)
+		return decodeDockerAuth(val)
 	}
 
 	// bad luck; let's normalize the entries first
@@ -316,25 +411,35 @@ func findAuthentication(registry, path string, legacyFormat bool) (string, strin
 	for k, v := range auths.AuthConfigs {
 		normalizedAuths[normalizeRegistry(k)] = v
 	}
+
 	if val, exists := normalizedAuths[registry]; exists {
-		return decodeDockerAuth(val.Auth)
+		return decodeDockerAuth(val)
 	}
-	return "", "", nil
+
+	return types.DockerAuthConfig{}, nil
 }
 
-func decodeDockerAuth(s string) (string, string, error) {
-	decoded, err := base64.StdEncoding.DecodeString(s)
+// decodeDockerAuth decodes the username and password, which is
+// encoded in base64.
+func decodeDockerAuth(conf dockerAuthConfig) (types.DockerAuthConfig, error) {
+	decoded, err := base64.StdEncoding.DecodeString(conf.Auth)
 	if err != nil {
-		return "", "", err
+		return types.DockerAuthConfig{}, err
 	}
+
 	parts := strings.SplitN(string(decoded), ":", 2)
 	if len(parts) != 2 {
 		// if it's invalid just skip, as docker does
-		return "", "", nil
+		return types.DockerAuthConfig{}, nil
 	}
+
 	user := parts[0]
 	password := strings.Trim(parts[1], "\x00")
-	return user, password, nil
+	return types.DockerAuthConfig{
+		Username:      user,
+		Password:      password,
+		IdentityToken: conf.IdentityToken,
+	}, nil
 }
 
 // convertToHostname converts a registry url which has http|https prepended

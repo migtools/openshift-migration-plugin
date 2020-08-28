@@ -2,8 +2,6 @@ package config
 
 import (
 	"fmt"
-
-	"github.com/sirupsen/logrus"
 )
 
 // ThinpoolOptionsConfig represents the "storage.options.thinpool"
@@ -134,6 +132,18 @@ type OptionsConfig struct {
 	// should be used to set up default GID mappings.
 	RemapGroup string `toml:"remap-group"`
 
+	// RootAutoUsernsUser is the name of one or more entries in /etc/subuid and
+	// /etc/subgid which should be used to set up automatically a userns.
+	RootAutoUsernsUser string `toml:"root-auto-userns-user"`
+
+	// AutoUsernsMinSize is the minimum size for a user namespace that is
+	// created automatically.
+	AutoUsernsMinSize uint32 `toml:"auto-userns-min-size"`
+
+	// AutoUsernsMaxSize is the maximum size for a user namespace that is
+	// created automatically.
+	AutoUsernsMaxSize uint32 `toml:"auto-userns-max-size"`
+
 	// Aufs container options to be handed to aufs drivers
 	Aufs struct{ AufsOptionsConfig } `toml:"aufs"`
 
@@ -236,7 +246,7 @@ func GetGraphDriverOptions(driverName string, options OptionsConfig) []string {
 			doptions = append(doptions, fmt.Sprintf("dm.xfs_nospace_max_retries=%s", options.Thinpool.XfsNoSpaceMaxRetries))
 		}
 
-	case "overlay":
+	case "overlay", "overlay2":
 		if options.Overlay.IgnoreChownErrors != "" {
 			doptions = append(doptions, fmt.Sprintf("%s.ignore_chown_errors=%s", driverName, options.Overlay.IgnoreChownErrors))
 		} else if options.IgnoreChownErrors != "" {
@@ -257,11 +267,11 @@ func GetGraphDriverOptions(driverName string, options OptionsConfig) []string {
 		} else if options.Size != "" {
 			doptions = append(doptions, fmt.Sprintf("%s.size=%s", driverName, options.Size))
 		}
-
-		if options.Overlay.SkipMountHome != "" || options.SkipMountHome != "" {
-			logrus.Warn("skip_mount_home option is no longer supported, ignoring option")
+		if options.Overlay.SkipMountHome != "" {
+			doptions = append(doptions, fmt.Sprintf("%s.skip_mount_home=%s", driverName, options.Overlay.SkipMountHome))
+		} else if options.SkipMountHome != "" {
+			doptions = append(doptions, fmt.Sprintf("%s.skip_mount_home=%s", driverName, options.SkipMountHome))
 		}
-
 	case "vfs":
 		if options.Vfs.IgnoreChownErrors != "" {
 			doptions = append(doptions, fmt.Sprintf("%s.ignore_chown_errors=%s", driverName, options.Vfs.IgnoreChownErrors))

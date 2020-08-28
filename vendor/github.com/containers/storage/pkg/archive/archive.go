@@ -68,6 +68,12 @@ type (
 	}
 )
 
+const (
+	tarExt  = "tar"
+	solaris = "solaris"
+	windows = "windows"
+)
+
 // Archiver allows the reuse of most utility functions of this package with a
 // pluggable Untar function.  To facilitate the passing of specific id mappings
 // for untar, an archiver can be created with maps which will then be passed to
@@ -325,15 +331,15 @@ func ReplaceFileTarWrapper(inputTarStream io.ReadCloser, mods map[string]TarModi
 func (compression *Compression) Extension() string {
 	switch *compression {
 	case Uncompressed:
-		return "tar"
+		return tarExt
 	case Bzip2:
-		return "tar.bz2"
+		return tarExt + ".bz2"
 	case Gzip:
-		return "tar.gz"
+		return tarExt + ".gz"
 	case Xz:
-		return "tar.xz"
+		return tarExt + ".xz"
 	case Zstd:
-		return "tar.zst"
+		return tarExt + ".zst"
 	}
 	return ""
 }
@@ -388,7 +394,7 @@ func fillGo18FileTypeBits(mode int64, fi os.FileInfo) int64 {
 // to a tar header
 func ReadSecurityXattrToTarHeader(path string, hdr *tar.Header) error {
 	capability, err := system.Lgetxattr(path, "security.capability")
-	if err != nil && err != system.EOPNOTSUPP {
+	if err != nil && err != system.EOPNOTSUPP && err != system.ErrNotSupportedPlatform {
 		return err
 	}
 	if capability != nil {
@@ -401,7 +407,7 @@ func ReadSecurityXattrToTarHeader(path string, hdr *tar.Header) error {
 // ReadUserXattrToTarHeader reads user.* xattr from filesystem to a tar header
 func ReadUserXattrToTarHeader(path string, hdr *tar.Header) error {
 	xattrs, err := system.Llistxattr(path)
-	if err != nil && err != system.EOPNOTSUPP {
+	if err != nil && err != system.EOPNOTSUPP && err != system.ErrNotSupportedPlatform {
 		return err
 	}
 	for _, key := range xattrs {
@@ -670,7 +676,7 @@ func createTarFile(path, extractDir string, hdr *tar.Header, reader io.Reader, L
 	}
 
 	// Lchown is not supported on Windows.
-	if Lchown && runtime.GOOS != "windows" {
+	if Lchown && runtime.GOOS != windows {
 		if chownOpts == nil {
 			chownOpts = &idtools.IDPair{UID: hdr.Uid, GID: hdr.Gid}
 		}
