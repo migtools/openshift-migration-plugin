@@ -38,4 +38,5 @@ const NamespaceSCCAnnotationUidRange string = "openshift.io/sa.scc.uid-range"
 
 // Restored items label
 const MigMigrationLabelKey string = "migmigration"
+const MigPlanLabelKey string = "migration.openshift.io/migplan-ref"
 const MigratedByLabel string = "migration.openshift.io/migrated-by" // (migmigration UID)
